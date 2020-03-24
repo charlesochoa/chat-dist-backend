@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+	compile 'com.rabbitmq:amqp-client:5.8.0'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
