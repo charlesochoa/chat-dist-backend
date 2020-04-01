@@ -66,7 +66,7 @@ public class AuxiliarController {
             if (messageNumber == 0) {
                 end = true;
             } else {
-                Message message = "Mensaje: " + messageNumber;
+                String message = "Mensaje: " + messageNumber;
                 channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
                 System.out.println(" [x] Enviado '" + message + "'");
             }
