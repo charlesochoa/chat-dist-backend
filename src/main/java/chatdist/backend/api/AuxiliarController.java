@@ -51,7 +51,7 @@ public class AuxiliarController {
 
     @GetMapping("/search")
     public String search(@RequestParam("q") String q) {
-        return "HOLA " + q;
+        return "Hello, " + q;
     }
 
     public void SendMessages() throws IOException, TimeoutException {
