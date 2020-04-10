@@ -40,8 +40,6 @@ public class AuxiliarController {
             System.out.println(e);
             System.exit(-1);
         }
-
-
     }
 
     @GetMapping("/search")
@@ -72,30 +70,24 @@ public class AuxiliarController {
     @GetMapping("/receive")
     public String receive(@RequestParam("me") String receiver) throws IOException, TimeoutException {
 
-        String response = "";
         Connection conn = factory.newConnection();
         Channel channel = conn.createChannel();
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        channel.queueDeclare(receiver, false, false, false, null);
+        String completeRes = "";
+        GetResponse response = channel.basicGet(receiver, autoAck);
+        do {
+            if (response == null) {
+                return completeRes;
+            } else {
+                AMQP.BasicProperties props = response.getProps();
+                byte[] body = response.getBody();
+                long deliveryTag = response.getEnvelope().getDeliveryTag();
+                completeRes += new String(body) +"\n";
+            }
+            response = channel.basicGet(receiver, autoAck);
+        } while (true);
 
-        channel.basicConsume(QUEUE_NAME, autoAck, "myConsumerTag",
-            new DefaultConsumer(channel) {
-                @Override
-                public void handleDelivery(String consumerTag,
-                                           Envelope envelope,
-                                           AMQP.BasicProperties properties,
-                                           byte[] body)
-                        throws IOException
-                {
-                    String routingKey = envelope.getRoutingKey();
-                    String contentType = properties.getContentType();
-                    long deliveryTag = envelope.getDeliveryTag();
-                    // (process the message components here ...)
-                    String response = new String(body);
 
-                    channel.basicAck(deliveryTag, false);
-                }
-            });
-        return "";
     }
 
 
@@ -122,33 +114,5 @@ public class AuxiliarController {
 
         channel.close();
         conn.close();
-    }
-
-    public void ReceiveMessages() throws IOException, TimeoutException {
-
-        System.out.println(" [*] Esperando mensajes. CTRL+C para salir");
-        Connection conn = factory.newConnection();
-        Channel channel = conn.createChannel();
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-
-        channel.basicConsume(QUEUE_NAME, autoAck, "myConsumerTag",
-            new DefaultConsumer(channel) {
-                @Override
-                public void handleDelivery(String consumerTag,
-                                           Envelope envelope,
-                                           AMQP.BasicProperties properties,
-                                           byte[] body)
-                        throws IOException
-                {
-                    String routingKey = envelope.getRoutingKey();
-                    String contentType = properties.getContentType();
-                    long deliveryTag = envelope.getDeliveryTag();
-                    // (process the message components here ...)
-                    String stringBody = new String(body);
-                    System.out.println(stringBody);
-
-                    channel.basicAck(deliveryTag, false);
-                }
-            });
     }
 }

@@ -14,7 +14,6 @@ public class AuxiliarTestApplication {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(BackendApplication.class, args);
         AuxiliarController t = new AuxiliarController();
-        t.ReceiveMessages();
 
     }
 }
