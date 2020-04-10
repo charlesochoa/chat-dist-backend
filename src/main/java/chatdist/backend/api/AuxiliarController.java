@@ -42,6 +42,13 @@ public class AuxiliarController {
         }
     }
 
+    @GetMapping("/")
+    public String test() {
+        return "Chat-Dist is up and working!";
+    }
+
+
+
     @GetMapping("/search")
     public String search(@RequestParam("q") String q) {
         return "Hello, " + q;
