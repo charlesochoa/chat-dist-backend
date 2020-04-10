@@ -1,21 +1,33 @@
 package chatdist.backend.model;
 
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+@Entity
 public class Chatroom {
-    private final UUID id;
-    private final String title;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+    private String name;
 
-    public Chatroom(UUID id, String title) {
-        this.id = id;
-        this.title = title;
+    protected Chatroom() {}
+
+    public Chatroom(String name) {
+        this.name = name;
     }
 
-    public String getTitle() {
-        return title;
+    @Override
+    public String toString() {
+        return String.format(
+                "Chatroom[id=%d, name='%s']",
+                id, name);
     }
 
-    public UUID getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 }
