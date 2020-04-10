@@ -24,8 +24,6 @@ public class AuxiliarController {
     private static int portNumber = 5672;
     private static String uri = "amqp://byfntbvj:2x_P1v83EjPv9MOr9ZEycnWq-ct7MDHE@kangaroo.rmq.cloudamqp.com/byfntbvj";
     private ConnectionFactory factory;
-    private Channel channel;
-    private Connection conn;
 
     public AuxiliarController() throws IOException, TimeoutException {
 
@@ -43,9 +41,6 @@ public class AuxiliarController {
             System.exit(-1);
         }
 
-        conn = factory.newConnection();
-        channel = conn.createChannel();
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
     }
 
@@ -54,7 +49,60 @@ public class AuxiliarController {
         return "Hello, " + q;
     }
 
+
+    @GetMapping("/send")
+    public String send(@RequestParam("to") String to,@RequestParam("from") String from,@RequestParam("msg") String msg) throws IOException, TimeoutException {
+
+        boolean end = false;
+
+        Connection conn = factory.newConnection();
+        Channel channel = conn.createChannel();
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        String message = from + ": " + msg;
+        channel.basicPublish("", to, null, message.getBytes());
+        channel.close();
+        conn.close();
+
+        return "Message sent! " + from;
+
+    }
+
+
+
+    @GetMapping("/receive")
+    public String receive(@RequestParam("me") String receiver) throws IOException, TimeoutException {
+
+        String response = "";
+        Connection conn = factory.newConnection();
+        Channel channel = conn.createChannel();
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+
+        channel.basicConsume(QUEUE_NAME, autoAck, "myConsumerTag",
+            new DefaultConsumer(channel) {
+                @Override
+                public void handleDelivery(String consumerTag,
+                                           Envelope envelope,
+                                           AMQP.BasicProperties properties,
+                                           byte[] body)
+                        throws IOException
+                {
+                    String routingKey = envelope.getRoutingKey();
+                    String contentType = properties.getContentType();
+                    long deliveryTag = envelope.getDeliveryTag();
+                    // (process the message components here ...)
+                    String response = new String(body);
+
+                    channel.basicAck(deliveryTag, false);
+                }
+            });
+        return "";
+    }
+
+
     public void SendMessages() throws IOException, TimeoutException {
+        Connection conn = factory.newConnection();
+        Channel channel = conn.createChannel();
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
         int messageNumber;
         boolean end = false;
@@ -79,7 +127,9 @@ public class AuxiliarController {
     public void ReceiveMessages() throws IOException, TimeoutException {
 
         System.out.println(" [*] Esperando mensajes. CTRL+C para salir");
-
+        Connection conn = factory.newConnection();
+        Channel channel = conn.createChannel();
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
         channel.basicConsume(QUEUE_NAME, autoAck, "myConsumerTag",
             new DefaultConsumer(channel) {
