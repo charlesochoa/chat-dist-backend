@@ -18,8 +18,8 @@ public class AuxiliarController {
     private final static String QUEUE_NAME = "hola";
     private static boolean autoAck = false;
     private static String userName = "byfntbvj";
-    private static  String password = "2x_P1v83EjPv9MOr9ZEycnWq-ct7MDHE";
-    private static String vHost  = "byfntbvj";
+    private static String password = "2x_P1v83EjPv9MOr9ZEycnWq-ct7MDHE";
+    private static String vHost = "byfntbvj";
     private static String hostName = "kangaroo.rmq.cloudamqp.com";
     private static int portNumber = 5672;
     private static String uri = "amqp://byfntbvj:2x_P1v83EjPv9MOr9ZEycnWq-ct7MDHE@kangaroo.rmq.cloudamqp.com/byfntbvj";
@@ -36,7 +36,7 @@ public class AuxiliarController {
         try {
 
             factory.setUri(uri);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
             System.exit(-1);
         }
@@ -56,7 +56,7 @@ public class AuxiliarController {
 
 
     @GetMapping("/send")
-    public String send(@RequestParam("to") String to,@RequestParam("from") String from,@RequestParam("msg") String msg) throws IOException, TimeoutException {
+    public String send(@RequestParam("to") String to, @RequestParam("from") String from, @RequestParam("msg") String msg) throws IOException, TimeoutException {
 
         boolean end = false;
 
@@ -71,7 +71,6 @@ public class AuxiliarController {
         return "Message sent! " + from;
 
     }
-
 
 
     @GetMapping("/receive")
@@ -93,10 +92,7 @@ public class AuxiliarController {
             }
             response = channel.basicGet(receiver, autoAck);
         } while (true);
-
-
     }
-
 
     public void SendMessages() throws IOException, TimeoutException {
         Connection conn = factory.newConnection();
@@ -122,4 +118,5 @@ public class AuxiliarController {
         channel.close();
         conn.close();
     }
+
 }
