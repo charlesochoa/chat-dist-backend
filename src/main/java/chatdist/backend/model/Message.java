@@ -1,30 +1,48 @@
 package chatdist.backend.model;
 
 import java.sql.Timestamp;
-import java.util.UUID;
+import javax.persistence.*;
 
+@Entity
 public class Message {
-    private final UUID id;
-    private final User sender;
-    private final User receiver;
-    private final Chatroom chatRoom;
-    private final byte[] file;
-    private final Timestamp time;
-    private final String content;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
 
-    public Message(UUID id, User senderId, User receiverId, UUID chatId, User sender, User receiver, Chatroom chatRoom, byte[] file, String content) {
-        this.id = id;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
+    private User sender;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
+    private User receiver;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
+    private Chatroom chatRoom;
+
+    private byte[] file;
+    private Timestamp time;
+    private String content;
+
+    protected Message() {}
+
+    public Message(User sender, User receiver, Chatroom chatRoom, String content) {
         this.sender = sender;
         this.receiver = receiver;
         this.chatRoom = chatRoom;
-        this.file = file;
         this.content = content;
         this.time = new Timestamp(System.currentTimeMillis());
     }
 
-    public UUID getId() {
-        return id;
+    @Override
+    public String toString() {
+        return String.format(
+                "Message[id=%d, sender='%s', receiver='%s', content='%s']",
+                id, sender.getName(), receiver.getName(), content);
     }
+
+    public Long getId() { return id; }
 
     public Timestamp getTime() {
         return time;
