@@ -47,7 +47,6 @@ public class AuxiliarController {
             System.exit(-1);
         }
     }
-    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/")
     public @ResponseBody Message test() {
         return new Message(new User("Charles","ing.charlesochoa@gmail.com"),new User("Gabriel","correopruebagabo@gmail.com"),null,"Saludo");
