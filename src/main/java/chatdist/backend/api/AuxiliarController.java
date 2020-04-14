@@ -93,7 +93,8 @@ public class AuxiliarController {
                 AMQP.BasicProperties props = response.getProps();
                 byte[] body = response.getBody();
                 long deliveryTag = response.getEnvelope().getDeliveryTag();
-                completeRes += new String(body) +"\n";
+                completeRes += new String(body) +"_";
+
             }
             response = channel.basicGet(receiver, autoAck);
         } while (true);
