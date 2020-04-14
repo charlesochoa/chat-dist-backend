@@ -17,11 +17,20 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping(path="/add")
-    public @ResponseBody String addNewUser (@RequestParam String name
+    public @ResponseBody User addNewUser(@RequestParam String name
             , @RequestParam String email) {
         User u = new User(name, email);
         userRepository.save(u);
-        return "Saved";
+        return u;
+    }
+
+    @PostMapping(path="/signup")
+    public @ResponseBody Iterable<User> signUp(@RequestParam String name
+            , @RequestParam String email) {
+        Iterable<User> users =  userRepository.findAll();
+        User u = new User(name, email);
+        userRepository.save(u);
+        return users;
     }
 
     @GetMapping(path="/all")

@@ -17,7 +17,7 @@ public class MessageController {
     private MessageRepository messageRepository;
 
 //    @PostMapping(path="/add")
-//    public @ResponseBody String addNewMessage (@RequestParam String name
+//    public @ResponseBody String addNewMessage(@RequestParam String name
 //            , @RequestParam String email) {
 //        Message m = new Message(name, email);
 //        messageRepository.save(m);

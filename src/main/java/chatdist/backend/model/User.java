@@ -14,12 +14,14 @@ public class User {
     private Long id;
     private String name;
     private String email;
+    private String queueName;
 
     protected User() {}
 
     public User(String name, String email) {
         this.name = name;
         this.email = email;
+        this.queueName = email;
     }
 
     @Override
@@ -38,4 +40,8 @@ public class User {
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
+
+    public String getQueueName() { return queueName; }
+
+    public void setQueueName(String queueName) { this.queueName = queueName; }
 }

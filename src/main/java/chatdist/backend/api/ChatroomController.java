@@ -17,7 +17,7 @@ public class ChatroomController {
     private ChatroomRepository chatroomRepository;
 
     @PostMapping(path="/add")
-    public @ResponseBody String addNewChatroom (@RequestParam String name) {
+    public @ResponseBody String addNewChatroom(@RequestParam String name) {
         Chatroom c = new Chatroom(name);
         chatroomRepository.save(c);
         return "Saved";
