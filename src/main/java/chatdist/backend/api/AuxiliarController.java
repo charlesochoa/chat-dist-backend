@@ -1,17 +1,23 @@
 package chatdist.backend.api;
 
 import chatdist.backend.BackendApplication;
+import chatdist.backend.model.AuxMessage;
+import chatdist.backend.model.Message;
+import chatdist.backend.model.User;
 import com.rabbitmq.client.*;
 import org.springframework.boot.SpringApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
+
 @RestController
+@CrossOrigin(origins = "*")
 public class AuxiliarController {
 
 
@@ -41,23 +47,22 @@ public class AuxiliarController {
             System.exit(-1);
         }
     }
-
     @GetMapping("/")
-    public String test() {
-        return "Chat-Dist is up and working!";
+    public @ResponseBody Message test() {
+        return new Message(new User("Charles","ing.charlesochoa@gmail.com"),new User("Gabriel","correopruebagabo@gmail.com"),null,"Saludo");
     }
 
 
 
     @GetMapping("/search")
-    public String search(@RequestParam("q") String q) {
+    public @ResponseBody String search(@RequestParam("q") String q) {
         return "Hello, " + q;
     }
 
 
     @GetMapping("/send")
-    public String send(@RequestParam("to") String to, @RequestParam("from") String from, @RequestParam("msg") String msg) throws IOException, TimeoutException {
-
+    public @ResponseBody AuxMessage send(@RequestParam("to") String to, @RequestParam("from") String from, @RequestParam("msg") String msg) throws IOException, TimeoutException {
+        System.out.println("Calling send");
         boolean end = false;
 
         Connection conn = factory.newConnection();
@@ -67,14 +72,14 @@ public class AuxiliarController {
         channel.basicPublish("", to, null, message.getBytes());
         channel.close();
         conn.close();
-
-        return "Message sent! " + from;
+        System.out.println("new AuxMessage(from,to,msg)");
+        return new AuxMessage(from,to,msg);
 
     }
 
 
     @GetMapping("/receive")
-    public String receive(@RequestParam("me") String receiver) throws IOException, TimeoutException {
+    public @ResponseBody AuxMessage receive(@RequestParam("me") String receiver) throws IOException, TimeoutException {
 
         Connection conn = factory.newConnection();
         Channel channel = conn.createChannel();
@@ -83,7 +88,7 @@ public class AuxiliarController {
         GetResponse response = channel.basicGet(receiver, autoAck);
         do {
             if (response == null) {
-                return completeRes;
+                return new AuxMessage(null,null,completeRes);
             } else {
                 AMQP.BasicProperties props = response.getProps();
                 byte[] body = response.getBody();
