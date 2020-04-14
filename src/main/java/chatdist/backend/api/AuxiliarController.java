@@ -22,7 +22,7 @@ public class AuxiliarController {
 
 
     private final static String QUEUE_NAME = "hola";
-    private static boolean autoAck = false;
+    private static boolean autoAck = true;
     private static String userName = "byfntbvj";
     private static String password = "2x_P1v83EjPv9MOr9ZEycnWq-ct7MDHE";
     private static String vHost = "byfntbvj";
