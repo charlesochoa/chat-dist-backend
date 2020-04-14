@@ -27,10 +27,15 @@ public class UserController {
     @PostMapping(path="/signup")
     public @ResponseBody Iterable<User> signUp(@RequestParam String name
             , @RequestParam String email) {
+        User user = userRepository.findByEmail(email);
         Iterable<User> users =  userRepository.findAll();
-        User u = new User(name, email);
-        userRepository.save(u);
-        return users;
+        if (user == null) {
+            User u = new User(name, email);
+            userRepository.save(u);
+            return users;
+        } else {
+            return users;
+        }
     }
 
     @GetMapping(path="/all")
