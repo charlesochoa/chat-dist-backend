@@ -48,9 +48,15 @@ public class User {
         return id;
     }
 
+<<<<<<< HEAD
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+=======
     public String getName() {
         return name;
     }
+>>>>>>> master
 
     public void setName(String name) {
         this.name = name;

@@ -6,7 +6,11 @@ public class AuxMessage {
     private String to;
     private String msg;
 
-    protected AuxMessage() {}
+    public AuxMessage() {
+        this.from = "";
+        this.to = "";
+        this.msg = "";
+    }
 
     public AuxMessage(String from, String to, String msg) {
         this.from = from;
@@ -26,6 +30,13 @@ public class AuxMessage {
     public String getTo() { return to; }
 
     public String getMsg() { return msg; }
+
+
+    public void setFrom(String f) { from=f; }
+
+    public void setTo(String t) { to=t; }
+
+    public void setMsg(String m) { msg=m; }
 
 
 }

@@ -6,18 +6,27 @@ import chatdist.backend.model.User;
 import com.rabbitmq.client.*;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.stereotype.Controller;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 
-@RestController
+@Controller
 @CrossOrigin(origins = "*")
 public class AuxiliarController {
 
 
     private final static String QUEUE_NAME = "hola";
-    private static boolean autoAck = false;
+    private static boolean autoAck = true;
     private static String userName = "byfntbvj";
     private static String password = "2x_P1v83EjPv9MOr9ZEycnWq-ct7MDHE";
     private static String vHost = "byfntbvj";
@@ -50,9 +59,9 @@ public class AuxiliarController {
 
 
 
-    @GetMapping("/search")
-    public @ResponseBody String search(@RequestParam("q") String q) {
-        return "Hello, " + q;
+    @GetMapping("/chat.sendMessage")
+    public AuxMessage sendMessage(@Payload AuxMessage message) {
+        return message;
     }
 
 
@@ -89,7 +98,8 @@ public class AuxiliarController {
                 AMQP.BasicProperties props = response.getProps();
                 byte[] body = response.getBody();
                 long deliveryTag = response.getEnvelope().getDeliveryTag();
-                completeRes += new String(body) +"\n";
+                completeRes += new String(body) +"_";
+
             }
             response = channel.basicGet(receiver, autoAck);
         } while (true);
