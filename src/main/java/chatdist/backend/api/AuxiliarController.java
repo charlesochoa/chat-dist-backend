@@ -8,15 +8,21 @@ import com.rabbitmq.client.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.stereotype.Controller;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 
-@RestController
+@Controller
 @CrossOrigin(origins = "*")
 public class AuxiliarController {
 
@@ -54,9 +60,9 @@ public class AuxiliarController {
 
 
 
-    @GetMapping("/search")
-    public @ResponseBody String search(@RequestParam("q") String q) {
-        return "Hello, " + q;
+    @GetMapping("/chat.sendMessage")
+    public AuxMessage sendMessage(@Payload AuxMessage message) {
+        return message;
     }
 
 
