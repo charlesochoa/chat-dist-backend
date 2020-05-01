@@ -1,27 +1,40 @@
 package chatdist.backend.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
-@Table(name="chatUser")
+@Table(name = "chatUser")
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
-    private String email;
-    private String queueName;
 
-    protected User() {}
+    @OneToMany(mappedBy = "admin")
+    private Set<Chatroom> chatrooms;
+
+    @OneToMany(mappedBy = "sender")
+    private Set<DirectMessage> sent_directMessages;
+
+    @OneToMany(mappedBy = "sender")
+    private Set<GroupMessage> sent_groupMessages;
+
+    @OneToMany(mappedBy = "receiver")
+    private Set<DirectMessage> received_directMessages;
+
+    private String name;
+
+    private String email;
+
+    private String bindingName;
+
+    protected User() {
+    }
 
     public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.queueName = email;
+        this.bindingName = email;
     }
 
     @Override
@@ -31,19 +44,37 @@ public class User {
                 id, name, email);
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
+<<<<<<< HEAD
     public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
+=======
+    public String getName() {
+        return name;
+    }
+>>>>>>> master
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public String getQueueName() { return queueName; }
+    public String getBindingName() {
+        return bindingName;
+    }
 
-    public void setQueueName(String queueName) { this.queueName = queueName; }
+    public void setBindingName(String queueName) {
+        this.bindingName = queueName;
+    }
 }

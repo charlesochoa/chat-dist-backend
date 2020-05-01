@@ -1,11 +1,9 @@
 package chatdist.backend.api;
 
-import chatdist.backend.BackendApplication;
 import chatdist.backend.model.AuxMessage;
-import chatdist.backend.model.Message;
+import chatdist.backend.model.DirectMessage;
 import chatdist.backend.model.User;
 import com.rabbitmq.client.*;
-import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -53,10 +51,11 @@ public class AuxiliarController {
             System.exit(-1);
         }
     }
-    @GetMapping("/")
-    public @ResponseBody Message test() {
-        return new Message(new User("Charles","ing.charlesochoa@gmail.com"),new User("Gabriel","correopruebagabo@gmail.com"),null,"Saludo");
-    }
+//    @GetMapping("/")
+//    public @ResponseBody
+//    DirectMessage test() {
+//        return new DirectMessage(new User("Charles","ing.charlesochoa@gmail.com"),new User("Gabriel","correopruebagabo@gmail.com"),null,"Saludo");
+//    }
 
 
 
