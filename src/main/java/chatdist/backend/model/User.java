@@ -10,7 +10,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "admin")
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private Set<Chatroom> chatrooms;
 
     @OneToMany(mappedBy = "sender")
@@ -19,7 +19,7 @@ public class User {
     @OneToMany(mappedBy = "sender")
     private Set<GroupMessage> sent_groupMessages;
 
-    @OneToMany(mappedBy = "receiver")
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<DirectMessage> received_directMessages;
 
     private String name;
@@ -48,15 +48,14 @@ public class User {
         return id;
     }
 
-<<<<<<< HEAD
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-=======
     public String getName() {
         return name;
     }
->>>>>>> master
+
 
     public void setName(String name) {
         this.name = name;

@@ -19,11 +19,15 @@ public class Chatroom {
     @JoinColumn(name = "admin_id")
     private User admin;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<GroupMessage> groupMessages;
+
     private String bindingName;
 
     private String name;
 
-    protected Chatroom() {}
+    protected Chatroom() {
+    }
 
     public Chatroom(String name, User admin) {
         this.name = name;

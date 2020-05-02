@@ -6,17 +6,14 @@ import chatdist.backend.repository.ChatroomRepository;
 import chatdist.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
-@Controller
+@RestController
+@CrossOrigin(origins = "*")
 @RequestMapping(path="/chatroom")
 public class ChatroomController {
     @Autowired
@@ -45,13 +42,43 @@ public class ChatroomController {
         return chatroomRepository.findAll();
     }
 
-    @PostMapping(path="/add-user")
-    public @ResponseBody Chatroom addUserChatroom(@RequestParam Long id, User user) {
+    @PostMapping(path="/{id}/add-user/{userId}")
+    public @ResponseBody Chatroom addUserChatroom(@PathVariable Long id, @PathVariable Long userId) {
         Optional<Chatroom> c = chatroomRepository.findById(id);
         if (c.isPresent()) {
-            c.get().addUser(user);
+            Optional<User> u = userRepository.findById(userId);
+            if (u.isPresent()) {
+                c.get().addUser(u.get());
+                chatroomRepository.save(c.get());
+                return c.get();
+            }
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found"
+            );
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Chatroom not found"
+        );
+    }
+
+    @PutMapping(path="/{id}")
+    public @ResponseBody Chatroom updateChatroom(@PathVariable Long id, @RequestParam String name) {
+        Optional<Chatroom> c = chatroomRepository.findById(id);
+        if (c.isPresent()) {
+            c.get().setName(name);
             chatroomRepository.save(c.get());
             return c.get();
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Chatroom not found"
+        );
+    }
+
+    @DeleteMapping(path="/{id}")
+    public ResponseEntity<Void> deleteChatroom(@PathVariable Long id) {
+        if (chatroomRepository.existsById(id)) {
+            chatroomRepository.deleteById(id);
+            return ResponseEntity.noContent().header("Content-Length", "0").build();
         }
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Chatroom not found"
