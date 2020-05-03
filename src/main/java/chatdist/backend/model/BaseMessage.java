@@ -19,7 +19,8 @@ public class BaseMessage {
 
     private Boolean isFile;
 
-    protected BaseMessage() {}
+    protected BaseMessage() {
+    }
 
     public BaseMessage(String content, Boolean isFile, User sender) {
         content = content;

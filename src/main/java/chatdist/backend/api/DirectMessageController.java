@@ -3,12 +3,13 @@ package chatdist.backend.api;
 import chatdist.backend.model.DirectMessage;
 import chatdist.backend.repository.DirectMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-@Controller
+@RestController
+@CrossOrigin(origins = "*")
 @RequestMapping(path="/direct-message")
 public class DirectMessageController {
     @Autowired
@@ -25,5 +26,16 @@ public class DirectMessageController {
     @GetMapping(path="/all")
     public @ResponseBody Iterable<DirectMessage> getAllDirectMessages() {
         return directMessageRepository.findAll();
+    }
+
+    @DeleteMapping(path="/{id}")
+    public ResponseEntity<Void> deleteDirectMessage(@PathVariable Long id) {
+        if (directMessageRepository.existsById(id)) {
+            directMessageRepository.deleteById(id);
+            return ResponseEntity.noContent().header("Content-Length", "0").build();
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Direct message not found"
+        );
     }
 }

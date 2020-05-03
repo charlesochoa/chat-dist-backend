@@ -4,11 +4,12 @@ import javax.persistence.*;
 
 @Entity
 public class GroupMessage extends BaseMessage {
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     @JoinColumn(unique = true)
     private Chatroom chatroom;
 
-    protected GroupMessage() {}
+    protected GroupMessage() {
+    }
 
     public GroupMessage(String content, Boolean isFile, User sender, Chatroom chatroom) {
         super(content, isFile, sender);
