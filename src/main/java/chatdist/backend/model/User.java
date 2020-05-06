@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "chatUser")
+@Table(name = "appUser")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,41 +22,66 @@ public class User {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<DirectMessage> received_directMessages;
 
-    private String name;
+    private String username;
 
     private String email;
 
+    private String password;
+
     private String bindingName;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     protected User() {
     }
 
-    public User(String name, String email) {
-        this.name = name;
+    public User(String username, String email, String password) {
+        this.username = username;
         this.email = email;
+        this.password = password;
         this.bindingName = email;
+    }
+
+    public User(User user) {
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.bindingName = user.getEmail();
+        this.id = user.getId();
+        this.roles = user.getRoles();
     }
 
     @Override
     public String toString() {
         return String.format(
                 "User[id=%d, name='%s', email='%s']",
-                id, name, email);
+                id, username, email);
     }
 
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String name) {
+        this.username = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -73,5 +98,13 @@ public class User {
 
     public void setBindingName(String queueName) {
         this.bindingName = queueName;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

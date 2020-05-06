@@ -20,7 +20,7 @@ public class GroupMessage extends BaseMessage {
     public String toString() {
         return String.format(
                 "GroupMessage[id=%d, sender='%s', chatroom='%s', content='%s']",
-                getId(), getSender().getName(), chatroom.getName(), getContent());
+                getId(), getSender().getUsername(), chatroom.getName(), getContent());
     }
 
     public Chatroom getChatRoom() {
