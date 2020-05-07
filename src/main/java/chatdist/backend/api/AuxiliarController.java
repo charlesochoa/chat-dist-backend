@@ -1,19 +1,18 @@
 package chatdist.backend.api;
 
 import chatdist.backend.model.AuxMessage;
-import chatdist.backend.model.DirectMessage;
-import chatdist.backend.model.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -21,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 
 
 @Controller
+@EnableScheduling
 @CrossOrigin(origins = "*")
 public class AuxiliarController {
 
@@ -34,6 +34,10 @@ public class AuxiliarController {
     private static int portNumber = 5672;
     private static String uri = "amqp://byfntbvj:2x_P1v83EjPv9MOr9ZEycnWq-ct7MDHE@kangaroo.rmq.cloudamqp.com/byfntbvj";
     private ConnectionFactory factory;
+
+
+    @Autowired
+    private SimpMessagingTemplate template;
 
     public AuxiliarController() throws IOException, TimeoutException {
 
@@ -59,10 +63,35 @@ public class AuxiliarController {
 
 
 
-    @GetMapping("/chat.sendMessage")
-    public AuxMessage sendMessage(@Payload AuxMessage message) {
-        return message;
+    @MessageMapping("/chat-send")
+    public void sendMessage(@Payload AuxMessage message) throws Exception {
+        for (int i=0; i<10;i++){
+            Thread.sleep(1000);
+            message.setMsg("message" + i);
+            this.template.convertAndSend("/topic/chat" + message.getFrom(),message);
+        }
     }
+
+    @MessageMapping("/chat-receive")
+    public void receive(@Payload AuxMessage message) throws Exception {
+
+        Connection conn = factory.newConnection();
+        Channel channel = conn.createChannel();
+        channel.queueDeclare(message.getFrom(), false, false, false, null);
+        GetResponse response = channel.basicGet(message.getFrom(), autoAck);
+        do {
+            if (response == null) {
+
+            } else {
+                AMQP.BasicProperties props = response.getProps();
+                byte[] body = response.getBody();
+                long deliveryTag = response.getEnvelope().getDeliveryTag();
+                this.template.convertAndSend("/topic/chat",new ObjectMapper().readValue ((String) new String(body),AuxMessage.class));
+            }
+            response = channel.basicGet(message.getFrom(), autoAck);
+        } while (true);
+    }
+
 
 
     @GetMapping("/send")

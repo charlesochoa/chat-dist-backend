@@ -1,5 +1,7 @@
 package chatdist.backend.model;
 
+import org.apache.tomcat.util.json.JSONParser;
+
 public class AuxMessage {
 
     private String from;
@@ -16,6 +18,9 @@ public class AuxMessage {
         this.from = from;
         this.to = to;
         this.msg = msg;
+    }
+
+    public AuxMessage(byte[] body) {
     }
 
     @Override
