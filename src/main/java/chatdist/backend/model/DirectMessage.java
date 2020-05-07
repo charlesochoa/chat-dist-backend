@@ -22,7 +22,7 @@ public class DirectMessage extends BaseMessage {
     public String toString() {
         return String.format(
                 "DirectMessage[id=%d, sender='%s', receiver='%s', content='%s']",
-                getId(), getSender().getName(), receiver.getName(), getContent());
+                getId(), getSender().getUsername(), receiver.getUsername(), getContent());
     }
 
     public User getReceiver() {
