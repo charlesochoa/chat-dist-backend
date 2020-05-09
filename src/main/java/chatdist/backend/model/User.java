@@ -14,13 +14,13 @@ public class User {
     private Set<Chatroom> chatrooms;
 
     @OneToMany(mappedBy = "sender")
-    private Set<DirectMessage> sent_directMessages;
+    private Set<DirectMessage> sentDirectMessages;
 
     @OneToMany(mappedBy = "sender")
-    private Set<GroupMessage> sent_groupMessages;
+    private Set<GroupMessage> sentGroupMessages;
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-    private Set<DirectMessage> received_directMessages;
+    private Set<DirectMessage> receivedDirectMessages;
 
     private String username;
 

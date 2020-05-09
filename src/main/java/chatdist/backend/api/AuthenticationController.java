@@ -1,12 +1,10 @@
 package chatdist.backend.api;
 
-import chatdist.backend.config.WebSecurityConfig;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.UserRepository;
-import chatdist.backend.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,7 +17,8 @@ public class AuthenticationController {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping(path="/sign-up")
     public @ResponseBody User signUp(@RequestBody User user) {
@@ -35,13 +34,13 @@ public class AuthenticationController {
     }
 
     @PostMapping(path="/sign-in")
-    public @ResponseBody User signIn(@RequestParam String username, @RequestParam String password) {
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+    public @ResponseBody User signIn(@RequestBody User user) {
+        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            Boolean matches = passwordEncoder.matches(password, user.getPassword());
+            User u = optionalUser.get();
+            Boolean matches = passwordEncoder.matches(user.getPassword(), u.getPassword());
             if (matches) {
-                return user;
+                return u;
             }
         }
         throw new ResponseStatusException(
