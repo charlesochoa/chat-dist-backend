@@ -32,19 +32,4 @@ public class AuthenticationController {
                 HttpStatus.BAD_REQUEST, "Username already exists"
         );
     }
-
-    @PostMapping(path="/sign-in")
-    public @ResponseBody User signIn(@RequestBody User user) {
-        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
-        if (optionalUser.isPresent()) {
-            User u = optionalUser.get();
-            Boolean matches = passwordEncoder.matches(user.getPassword(), u.getPassword());
-            if (matches) {
-                return u;
-            }
-        }
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Invalid credentials for username or password"
-        );
-    }
 }
