@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,14 +19,15 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(path="/add")
     public @ResponseBody User addNewUser(@RequestParam String username
             , @RequestParam String email, @RequestParam String password) {
         User u = new User(username, password);
-        u.setPassword(bCryptPasswordEncoder.encode(u.getPassword()));
+        u.setPassword(passwordEncoder.encode(u.getPassword()));
         userRepository.save(u);
         return u;
     }

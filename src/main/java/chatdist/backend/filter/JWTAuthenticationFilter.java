@@ -5,7 +5,6 @@ import chatdist.backend.model.User;
 import chatdist.backend.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,38 +34,27 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        System.out.println("IM HERE");
         try {
             User credentials = new ObjectMapper()
                     .readValue(request.getInputStream(), User.class);
             Optional<User> user = userRepository.findByUsername(credentials.getUsername());
-            System.out.println("ASDASDASDASDASDASDASD");
             if (user.isPresent()) {
                 CustomUserDetails customUserDetails = new CustomUserDetails(user.get());
-                System.out.println("JOJOJOJOJOJOJOJO");
-                System.out.println(customUserDetails.getUsername());
-                System.out.println(customUserDetails.getPassword());
                 try {
                     Authentication auth = authenticationManager.authenticate(
                             new UsernamePasswordAuthenticationToken(
                                     customUserDetails.getUsername(),
-                                    customUserDetails.getPassword(),
+                                    credentials.getPassword(),
                                     customUserDetails.getAuthorities())
                     );
-                    System.out.println("YA HICE LA AUTENTICACION");
-                    System.out.println(auth.isAuthenticated());
-                    System.out.print("ESTOY HACIENDO ESTO");
                     return auth;
                 } catch (AuthenticationException e) {
-                    System.out.println(e);
-                    return null;
+                    throw new RuntimeException(e);
                 }
             } else {
-                System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                 throw new UsernameNotFoundException(credentials.getUsername());
             }
         } catch (IOException e) {
-            System.out.println("UNA EXCEPCIONNNNNNNNN");
             throw new RuntimeException(e);
         }
     }
@@ -75,12 +63,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
-        System.out.println("AAAAAAAAAAAAAAAAAA");
         String token = JWT.create()
                 .withSubject(((CustomUserDetails) authResult.getPrincipal()).getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JWTConstants.EXPIRATION_TIME))
                 .sign(HMAC512(JWTConstants.SECRET.getBytes()));
-        System.out.println(token);
         response.addHeader(JWTConstants.HEADER_STRING, JWTConstants.TOKEN_PREFIX + token);
     }
 }
