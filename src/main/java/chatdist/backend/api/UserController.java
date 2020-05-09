@@ -25,7 +25,7 @@ public class UserController {
     @PostMapping(path="/add")
     public @ResponseBody User addNewUser(@RequestParam String username
             , @RequestParam String email, @RequestParam String password) {
-        User u = new User(username, email, password);
+        User u = new User(username, password);
         u.setPassword(bCryptPasswordEncoder.encode(u.getPassword()));
         userRepository.save(u);
         return u;

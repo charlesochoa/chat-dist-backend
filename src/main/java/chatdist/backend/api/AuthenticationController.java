@@ -25,7 +25,7 @@ public class AuthenticationController {
     public @ResponseBody User signUp(@RequestBody User user) {
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
         if (!optionalUser.isPresent()) {
-            User newUser = new User(user.getUsername(), user.getEmail(), passwordEncoder.encode(user.getPassword()));
+            User newUser = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()));
             userRepository.save(newUser);
             return newUser;
         }

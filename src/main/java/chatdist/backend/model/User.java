@@ -37,11 +37,10 @@ public class User {
     protected User() {
     }
 
-    public User(String username, String email, String password) {
+    public User(String username,  String password) {
         this.username = username;
-        this.email = email;
+        this.bindingName = "user." + username;
         this.password = password;
-        this.bindingName = email;
     }
 
     public User(User user) {
