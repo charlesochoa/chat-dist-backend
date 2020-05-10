@@ -22,7 +22,7 @@ import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 
-@Controller
+@RestController
 @EnableScheduling
 @CrossOrigin(origins = "*")
 public class AuxiliarController {
