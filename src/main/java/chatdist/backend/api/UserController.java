@@ -24,12 +24,16 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(path="/add")
-    public @ResponseBody User addNewUser(@RequestParam String username
-            , @RequestParam String email, @RequestParam String password) {
-        User u = new User(username, email, password);
-        u.setPassword(passwordEncoder.encode(u.getPassword()));
-        userRepository.save(u);
-        return u;
+    public @ResponseBody User addNewUser(@RequestBody User user) {
+        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
+        if (!optionalUser.isPresent()) {
+            User newUser = new User(user.getUsername(), user.getEmail(), passwordEncoder.encode(user.getPassword()));
+            userRepository.save(newUser);
+            return newUser;
+        }
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Username already exists"
+        );
     }
 
     @GetMapping(path="/all")

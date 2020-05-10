@@ -43,7 +43,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 try {
                     Authentication auth = authenticationManager.authenticate(
                             new UsernamePasswordAuthenticationToken(
-                                    customUserDetails.getUsername(),
+                                    credentials.getUsername(),
                                     credentials.getPassword(),
                                     customUserDetails.getAuthorities())
                     );
