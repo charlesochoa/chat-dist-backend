@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping(path="/user")
 public class UserController {
     @Autowired
