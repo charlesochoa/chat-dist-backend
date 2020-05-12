@@ -1,5 +1,4 @@
 package chatdist.backend.config;
-
 import chatdist.backend.filter.JWTAuthenticationFilter;
 import chatdist.backend.filter.JWTAuthorizationFilter;
 import chatdist.backend.repository.UserRepository;
@@ -18,53 +17,43 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService userDetailsService;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests()
+        http.cors().configurationSource(corsConfigurationSource())
+                .and().csrf().disable().authorizeRequests()
+//                .antMatchers("/auth/*", "/login", "/ws/*").permitAll()
                 .antMatchers("/**").permitAll()
-
-        // http.cors().configurationSource(corsConfigurationSource())
-        //         .and().csrf().disable().authorizeRequests()
-        //         .antMatchers("/auth/*", "/login", "/ws/*").permitAll()
-
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), userRepository))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        //configuration.setAllowedOrigins(Arrays.asList("http://192.168.1.125:4200"));
-        //configuration.setAllowedMethods(Arrays.asList("HEAD",
-        //        "GET", "POST", "PUT", "DELETE", "PATCH"));
-        //configuration.setAllowCredentials(true);
-        //configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowedOrigins(Arrays.asList("http://192.168.1.125:4200"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD",
+                "GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
@@ -72,5 +61,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }

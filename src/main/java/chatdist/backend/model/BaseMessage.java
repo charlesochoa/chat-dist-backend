@@ -17,16 +17,16 @@ public class BaseMessage {
 
     private String content;
 
-    private Boolean isFile;
+    private Boolean text;
 
     protected BaseMessage() {
     }
 
-    public BaseMessage(String content, Boolean isFile, User sender) {
-        content = content;
-        isFile = isFile;
-        sender = sender;
-        Timestamp time = new Timestamp(System.currentTimeMillis());
+    public BaseMessage(String content, Boolean text, User sender) {
+        this.content = content;
+        this.text = text;
+        this.sender = sender;
+        this.time = new Timestamp(System.currentTimeMillis());
     }
 
     public Long getId() {
@@ -45,7 +45,12 @@ public class BaseMessage {
         return content;
     }
 
-    public Boolean getFile() {
-        return isFile;
+    public Boolean getText() {
+        return text;
     }
+
+    public void setText(Boolean text) {
+        this.text = text;
+    }
+
 }

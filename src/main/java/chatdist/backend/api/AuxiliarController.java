@@ -2,23 +2,20 @@ package chatdist.backend.api;
 
 import chatdist.backend.model.AuxMessage;
 import chatdist.backend.model.DirectMessage;
+import chatdist.backend.model.GroupMessage;
 import chatdist.backend.model.User;
-import chatdist.backend.repository.UserRepository;
+import chatdist.backend.repository.DirectMessageRepository;
+import chatdist.backend.repository.GroupMessageRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
@@ -26,12 +23,12 @@ import java.util.concurrent.TimeoutException;
 @RestController
 @EnableScheduling
 public class AuxiliarController {
-
+    @Autowired
+    private GroupMessageRepository groupMessageRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private DirectMessageRepository directMessageRepository;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final String EXCHANGE_NAME = "chat.dist.direct.exchange";
     private static final String ADMIN_ROUTING_KEY = "channel.general";
     private static boolean autoAck = true;
@@ -101,6 +98,8 @@ public class AuxiliarController {
         System.out.println("Calling send:");
         boolean end = false;
 
+        System.out.println(message.getText());
+
         // Creating Object of ObjectMapper define in Jakson Api
         ObjectMapper Obj = new ObjectMapper();
 
@@ -112,6 +111,37 @@ public class AuxiliarController {
             // Displaying JSON String
             System.out.println(jsonStr);
             channel.basicPublish(EXCHANGE_NAME, message.getReceiver().getBindingName(), null, jsonStr.getBytes());
+            System.out.println(message);
+            directMessageRepository.save(message);
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(message);
+
+    }
+
+    @MessageMapping("/chat-send-group")
+    public @ResponseBody void sendGroupMessage(@Payload GroupMessage message) throws IOException, TimeoutException {
+        System.out.println("Calling send:");
+        boolean end = false;
+
+        System.out.println(message.getText());
+
+        // Creating Object of ObjectMapper define in Jakson Api
+        ObjectMapper Obj = new ObjectMapper();
+
+        try {
+
+            // get Oraganisation object as a json string
+            String jsonStr = Obj.writeValueAsString(message);
+
+            // Displaying JSON String
+            System.out.println(jsonStr);
+            channel.basicPublish(EXCHANGE_NAME, message.getChatRoom().getBindingName(), null, jsonStr.getBytes());
+            System.out.println(message);
+            groupMessageRepository.save(message);
         }
 
         catch (IOException e) {
