@@ -1,6 +1,7 @@
 package chatdist.backend.api;
 
 import chatdist.backend.model.AuxMessage;
+import chatdist.backend.model.DirectMessage;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,71 +71,54 @@ public class AuxiliarController {
     }
 
 
-    @PostMapping(path="/sign-up")
-    public @ResponseBody
-    User signUp(@RequestBody User user) throws IOException, TimeoutException {
-        System.out.println("SIGNING UP");
-        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
-        if (!optionalUser.isPresent()) {
-            channel.queueDeclare(user.getUsername(), false, false, false, null);
-            User newUser = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()));
-            channel.queueDeclare(newUser.getBindingName(),true,false,false,null);
-            channel.queueBind(newUser.getBindingName(),EXCHANGE_NAME,newUser.getBindingName());
-            channel.queueBind(newUser.getBindingName(),EXCHANGE_NAME,ADMIN_ROUTING_KEY);
-            User savedUser = userRepository.save(newUser);
-            return savedUser;
-        }
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Username already exists"
-        );
-    }
 
-
-    @MessageMapping("/chat-send")
-    public void sendMessage(@Payload AuxMessage message) throws Exception {
-        for (int i=0; i<10;i++){
-            Thread.sleep(1000);
-            message.setMsg("message" + i);
-            this.template.convertAndSend("/topic/chat" + message.getFrom(),message);
-        }
-    }
 
     @MessageMapping("/chat-receive")
-    public void receive(@Payload AuxMessage message) throws Exception {
-
-        Connection conn = factory.newConnection();
-        Channel channel = conn.createChannel();
-        channel.queueDeclare(message.getFrom(), false, false, false, null);
-        GetResponse response = channel.basicGet(message.getFrom(), autoAck);
+    public void receive(@Payload User user) throws Exception {
+        System.out.println("Preparing reception in queue: " + user.getBindingName());
+        channel.queueDeclare(user.getBindingName(), true, false, false, null);
+        GetResponse response = channel.basicGet(user.getBindingName(), autoAck);
         do {
             if (response == null) {
+                // System.out.println("To" + user.getUsername()+": Response is null. Wait a second.");
+                Thread.sleep(1000);
 
             } else {
                 AMQP.BasicProperties props = response.getProps();
                 byte[] body = response.getBody();
                 long deliveryTag = response.getEnvelope().getDeliveryTag();
-                this.template.convertAndSend("/topic/chat",new ObjectMapper().readValue ((String) new String(body),AuxMessage.class));
+                System.out.println("To" + user.getUsername()+ ": " + (String) new String(body));
+
+                this.template.convertAndSend("/topic/chat/" + user.getUsername(),(String) new String(body));
             }
-            response = channel.basicGet(message.getFrom(), autoAck);
+            response = channel.basicGet(user.getBindingName(), autoAck);
         } while (true);
     }
 
 
 
-    @GetMapping("/send")
-    public @ResponseBody AuxMessage send(@RequestParam("to") String to, @RequestParam("from") String from, @RequestParam("msg") String msg) throws IOException, TimeoutException {
-        System.out.println("Calling send");
+    @MessageMapping("/chat-send")
+    public @ResponseBody void sendMessage(@Payload DirectMessage message) throws IOException, TimeoutException {
+        System.out.println("Calling send:");
         boolean end = false;
 
-        Connection conn = factory.newConnection();
-        Channel channel = conn.createChannel();
-        channel.queueDeclare(ADMIN_ROUTING_KEY, false, false, false, null);
-        String message = from + ": " + msg;
-        channel.basicPublish("", to, null, message.getBytes());
-        channel.close();
-        conn.close();
-        System.out.println("new AuxMessage(from,to,msg)");
-        return new AuxMessage(from,to,msg);
+        // Creating Object of ObjectMapper define in Jakson Api
+        ObjectMapper Obj = new ObjectMapper();
+
+        try {
+
+            // get Oraganisation object as a json string
+            String jsonStr = Obj.writeValueAsString(message);
+
+            // Displaying JSON String
+            System.out.println(jsonStr);
+            channel.basicPublish(EXCHANGE_NAME, message.getReceiver().getBindingName(), null, jsonStr.getBytes());
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(message);
 
     }
 
@@ -142,8 +126,6 @@ public class AuxiliarController {
     @GetMapping("/receive")
     public @ResponseBody AuxMessage receive(@RequestParam("me") String receiver) throws IOException, TimeoutException {
 
-        Connection conn = factory.newConnection();
-        Channel channel = conn.createChannel();
         channel.queueDeclare(receiver, false, false, false, null);
         String completeRes = "";
         GetResponse response = channel.basicGet(receiver, autoAck);
