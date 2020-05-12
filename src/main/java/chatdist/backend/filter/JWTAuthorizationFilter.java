@@ -1,5 +1,6 @@
 package chatdist.backend.filter;
 
+import chatdist.backend.util.JWTConstants;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,10 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static chatdist.backend.filter.JWTConstants.*;
-
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
@@ -25,13 +23,12 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String header = request.getHeader(HEADER_STRING);
+        String header = request.getHeader(JWTConstants.HEADER_STRING);
 
-        if (header == null || !header.startsWith(TOKEN_PREFIX)) {
+        if (header == null || !header.startsWith(JWTConstants.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
-
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -39,12 +36,12 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(HEADER_STRING);
+        String token = request.getHeader(JWTConstants.HEADER_STRING);
         if (token != null) {
             // parse the token.
-            String user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+            String user = JWT.require(Algorithm.HMAC512(JWTConstants.secret.getBytes()))
                     .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
+                    .verify(token.replace(JWTConstants.TOKEN_PREFIX, ""))
                     .getSubject();
 
             if (user != null) {

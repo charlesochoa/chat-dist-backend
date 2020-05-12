@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DirectMessageRepository  extends BaseMessageRepository<DirectMessage> {
+public interface DirectMessageRepository extends BaseMessageRepository<DirectMessage> {
     @Query("SELECT d FROM DirectMessage d WHERE d.receiver = ?1 OR d.sender = ?1")
     List<DirectMessage> getDirectMessagesByUser(User user);
 }

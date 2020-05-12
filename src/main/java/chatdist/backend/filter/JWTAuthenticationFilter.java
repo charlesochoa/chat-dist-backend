@@ -3,6 +3,7 @@ package chatdist.backend.filter;
 import chatdist.backend.model.CustomUserDetails;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.UserRepository;
+import chatdist.backend.util.JWTConstants;
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+
     private UserRepository userRepository;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
@@ -66,7 +68,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = JWT.create()
                 .withSubject(((CustomUserDetails) authResult.getPrincipal()).getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JWTConstants.EXPIRATION_TIME))
-                .sign(HMAC512(JWTConstants.SECRET.getBytes()));
+                .sign(HMAC512(JWTConstants.secret.getBytes()));
         response.addHeader(JWTConstants.HEADER_STRING, JWTConstants.TOKEN_PREFIX + token);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");

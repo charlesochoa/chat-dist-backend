@@ -1,18 +1,23 @@
 package chatdist.backend.api;
 
 import chatdist.backend.model.Chatroom;
-import chatdist.backend.model.DirectMessage;
 import chatdist.backend.model.GroupMessage;
-import chatdist.backend.model.User;
 import chatdist.backend.repository.ChatroomRepository;
 import chatdist.backend.repository.GroupMessageRepository;
+import chatdist.backend.util.RabbitMQConstants;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.client.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping(path="/group-message")
@@ -22,6 +27,22 @@ public class GroupMessageController {
 
     @Autowired
     private ChatroomRepository chatroomRepository;
+
+    @Autowired
+    private Channel channel;
+
+    @MessageMapping("/send-group-message")
+    public @ResponseBody void sendGroupMessage(@Payload GroupMessage message) throws IOException, TimeoutException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String jsonStr = objectMapper.writeValueAsString(message);
+            channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, message.getChatRoom().getBindingName(),
+                    null, jsonStr.getBytes());
+            groupMessageRepository.save(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @GetMapping(path="/all")
     public @ResponseBody Iterable<GroupMessage> getAllGroupMessages() {

@@ -13,6 +13,6 @@ public interface ChatroomRepository extends CrudRepository<Chatroom, Long> {
 
     Optional<Chatroom> findByAdmin(User admin);
 
-    @Query("SELECT c FROM Chatroom c WHERE ?1 in (SELECT u FROM c.users u)")
+    @Query("SELECT c FROM Chatroom c WHERE ?1 IN (SELECT u FROM c.users u)")
     List<Chatroom> findByParticipant(User user);
 }

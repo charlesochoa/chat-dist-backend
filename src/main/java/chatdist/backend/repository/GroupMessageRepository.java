@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GroupMessageRepository  extends BaseMessageRepository<GroupMessage> {
+public interface GroupMessageRepository extends BaseMessageRepository<GroupMessage> {
     @Query("SELECT g FROM GroupMessage g WHERE g.chatroom = ?1")
     List<GroupMessage> getGroupMessagesByChatroom(Chatroom chatroom);
 }
