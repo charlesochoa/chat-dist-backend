@@ -25,7 +25,6 @@ import java.util.concurrent.TimeoutException;
 
 @RestController
 @EnableScheduling
-@CrossOrigin(origins = "*")
 public class AuxiliarController {
 
 

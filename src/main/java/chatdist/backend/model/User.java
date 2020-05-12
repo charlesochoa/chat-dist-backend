@@ -43,11 +43,18 @@ public class User {
         this.password = password;
     }
 
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.bindingName = "user." + username;
+        this.email = email;
+        this.password = password;
+    }
+
     public User(User user) {
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.bindingName = user.getEmail();
+        this.bindingName = user.getBindingName();
         this.id = user.getId();
         this.roles = user.getRoles();
     }

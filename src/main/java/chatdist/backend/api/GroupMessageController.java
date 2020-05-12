@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping(path="/group-message")
 public class GroupMessageController {
     @Autowired

@@ -32,6 +32,7 @@ public class Chatroom {
     public Chatroom(String name, User admin) {
         this.name = name;
         this.admin = admin;
+        this.bindingName = "chatroom." + name;
     }
 
     @Override

@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping(path="/chatroom")
 public class ChatroomController {
     @Autowired
@@ -29,7 +28,6 @@ public class ChatroomController {
             User admin = u.get();
             Chatroom c = new Chatroom(name, admin);
             chatroomRepository.save(c);
-            c.setBindingName(c.getName().concat(c.getId().toString()));
             return c;
         }
         throw new ResponseStatusException(

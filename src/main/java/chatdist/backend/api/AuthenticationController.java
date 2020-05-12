@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping(path="/auth")
 public class AuthenticationController {
     @Autowired
