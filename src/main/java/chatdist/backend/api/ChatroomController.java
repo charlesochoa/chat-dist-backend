@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path="/chatroom")
@@ -28,14 +29,16 @@ public class ChatroomController {
     private Channel channel;
 
     @PostMapping(path="/add")
-    public @ResponseBody Chatroom addNewChatroom(@RequestBody Chatroom chatroom,
-                                                 @RequestParam Long userId) throws IOException {
-        Optional<User> optionalUser = userRepository.findById(userId);
+    public @ResponseBody Chatroom addNewChatroom(@RequestBody Chatroom chatroom) throws IOException {
+        Optional<User> optionalUser = userRepository.findById(chatroom.getAdmin().getId());
         if (optionalUser.isPresent()) {
             User admin = optionalUser.get();
-            chatroom.addUser(admin);
-            chatroomRepository.save(chatroom);
-            return chatroom;
+            Chatroom newChatroom = new Chatroom(chatroom.getName(), admin);
+            newChatroom.addUser(admin);
+            chatroomRepository.save(newChatroom);
+            newChatroom.setBindingName("chatroom." + newChatroom.getId().toString() + "." + admin.getUsername());
+            chatroomRepository.save(newChatroom);
+            return newChatroom;
         }
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User not found"
@@ -55,6 +58,18 @@ public class ChatroomController {
         }
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User not found"
+        );
+    }
+
+    @GetMapping(path="/{id}/users")
+    public @ResponseBody Iterable<User> getAllUsersFromChatroom(@PathVariable Long id) {
+        Optional<Chatroom> optionalChatroom = chatroomRepository.findById(id);
+        if (optionalChatroom.isPresent()) {
+            Set<User> users = optionalChatroom.get().getUsers();
+            return users;
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Chatroom not found"
         );
     }
 

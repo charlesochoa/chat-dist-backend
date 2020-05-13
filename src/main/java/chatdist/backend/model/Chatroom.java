@@ -1,6 +1,7 @@
 package chatdist.backend.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -32,7 +33,7 @@ public class Chatroom {
     public Chatroom(String name, User admin) {
         this.name = name;
         this.admin = admin;
-        this.bindingName = "chatroom." + name;
+        this.users = new HashSet<>();
     }
 
     @Override
@@ -72,5 +73,9 @@ public class Chatroom {
 
     public boolean addUser(User user) {
         return users.add(user);
+    }
+
+    public Set<User> getUsers() {
+        return users;
     }
 }

@@ -4,7 +4,9 @@ import chatdist.backend.model.DirectMessage;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.DirectMessageRepository;
 import chatdist.backend.repository.UserRepository;
+import chatdist.backend.service.FileStorageService;
 import chatdist.backend.util.RabbitMQConstants;
+import chatdist.backend.util.UploadFileResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -31,6 +35,9 @@ public class DirectMessageController {
     @Autowired
     private Channel channel;
 
+    @Autowired
+    private FileStorageService fileStorageService;
+
     @MessageMapping("/send-direct-message")
     public @ResponseBody void sendMessage(@Payload DirectMessage message) throws IOException, TimeoutException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -42,6 +49,19 @@ public class DirectMessageController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @PostMapping("/send-file")
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
+        String fileName = fileStorageService.storeFile(file);
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
+
+        return new UploadFileResponse(fileName, fileDownloadUri,
+                file.getContentType(), file.getSize());
     }
 
     @GetMapping(path="/all")

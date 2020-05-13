@@ -45,8 +45,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(path="/sign-in")
-    public @ResponseBody
-    Iterable<User> signIn(@RequestBody User user) throws IOException, TimeoutException {
+    public @ResponseBody User signIn(@RequestBody User user) throws IOException, TimeoutException {
         System.out.println("SIGNING IN");
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
         System.out.println(user.getUsername());
@@ -56,7 +55,7 @@ public class AuthenticationController {
             System.out.println(passwordEncoder.encode(user.getPassword()));
             if(optionalUser.get().getPassword().equals( user.getPassword())){
 
-                return userRepository.findAll() ;
+                return optionalUser.get();
             }
             return null;
         }
