@@ -1,4 +1,4 @@
-# API REST
+# Chat Dist Backend API REST
 
 This documentation contains all the endpoints in the chat application and how to use them.
 
