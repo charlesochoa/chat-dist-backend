@@ -84,26 +84,24 @@ This endpoint returns all the users in the application.
   * **Code:** `200 OK` <br />
     **Content:**   
       ```
-        {
-         [
-            {
-              "id": 1,
-              "username": "user1",
-              "email": null,
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user1",
-              "roles": []
-            },
-            {
-              "id": 2,
-              "username": "user2",
-              "email": null,
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user2",
-              "roles": []
-            }
-          ]
-        }
+        [
+          {
+            "id": 1,
+            "username": "user1",
+            "email": null,
+            "password": "<BCrypt encoded password>",
+            "bindingName": "user.user1",
+            "roles": []
+          },
+          {
+            "id": 2,
+            "username": "user2",
+            "email": null,
+            "password": "<BCrypt encoded password>",
+            "bindingName": "user.user2",
+            "roles": []
+          }
+        ]
       ```
  
 * **Error Response:**
@@ -195,26 +193,36 @@ This endpoint returns all the chatrooms in the application.
   * **Code:** `200 OK` <br />
     **Content:**   
       ```
-        {
-         [
-            {
-              "id": 1,
-              "username": "user1",
-              "email": null,
+        [
+          {
+            "id": 1,
+            "users": [],
+            "admin": {
+              "id": 10,
+              "username": "user10",
+              "email": "user10@gmail.com",
               "password": "<BCrypt encoded password>",
-              "bindingName": "user.user1",
+              "bindingName": "user.user10",
               "roles": []
             },
-            {
-              "id": 2,
-              "username": "user2",
-              "email": null,
+            "bindingName": "chatroom.1.user10",
+            "name": "Chatroom 1"
+          },
+          {
+            "id": 2,
+            "users": [],
+            "admin": {
+              "id": 10,
+              "username": "user10",
+              "email": "user10@gmail.com",
               "password": "<BCrypt encoded password>",
-              "bindingName": "user.user2",
+              "bindingName": "user.user10",
               "roles": []
-            }
-          ]
-        }
+            },
+            "bindingName": "chatroom.2.user10",
+            "name": "Chatroom 2"
+          },
+        ]
       ```
  
 * **Error Response:**
@@ -253,26 +261,52 @@ This endpoint returns all the direct messages in the application.
   * **Code:** `200 OK` <br />
     **Content:**   
       ```
-        {
-         [
-            {
-              "id": 1,
-              "username": "user1",
-              "email": null,
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user1",
-              "roles": []
+       [
+          {
+            "id": 1,
+            "sender": {
+                "id": 1,
+                "username": "user1",
+                "email": "user1@gmail.com",
+                "password": "<BCrypt encoded password>",
+                "bindingName": "user.user1",
+                "roles": []
             },
-            {
-              "id": 2,
-              "username": "user2",
-              "email": null,
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user2",
-              "roles": []
+            "time": "1970-01-01T00:00:00.000+0000",
+            "content": "A new message",
+            "text": true,
+            "receiver": {
+                "id": 2,
+                "username": "user2",
+                "email": "user2@gmail.com",
+                "password": "<BCrypt encoded password>",
+                "bindingName": "user.user2",
+                "roles": []
             }
-          ]
-        }
+          },
+          {
+            "id": 2,
+            "sender": {
+                "id": 3,
+                "username": "user3",
+                "email": "user3@gmail.com",
+                "password": "<BCrypt encoded password>",
+                "bindingName": "user.user3",
+                "roles": []
+            },
+            "time": "1970-01-01T00:00:00.000+0000",
+            "content": "asdfasdfasdfasdf",
+            "text": true,
+            "receiver": {
+                "id": 1,
+                "username": "user1",
+                "email": "user1@gmail.com",
+                "password": "<BCrypt encoded password>",
+                "bindingName": "user.user1",
+                "roles": []
+            }
+          }
+        ]
       ```
  
 * **Error Response:**
@@ -291,7 +325,7 @@ This endpoint returns all the direct messages in the application.
 
 ## Group Message
 
-The model used to represent the group message in the chat application, the group message sent from an user 
+The model used to represent the group message in the chat application, the group message is a message sent from an user 
 to a chatroom.
 
 ### `/group-messages/all`
@@ -311,26 +345,24 @@ This endpoint returns all the group messages in the application.
   * **Code:** `200 OK` <br />
     **Content:**   
       ```
-        {
-         [
-            {
-              "id": 1,
-              "username": "user1",
-              "email": null,
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user1",
-              "roles": []
-            },
-            {
-              "id": 2,
-              "username": "user2",
-              "email": null,
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user2",
-              "roles": []
-            }
-          ]
-        }
+        [
+          {
+            "id": 1,
+            "username": "user1",
+            "email": null,
+            "password": "<BCrypt encoded password>",
+            "bindingName": "user.user1",
+            "roles": []
+          },
+          {
+            "id": 2,
+            "username": "user2",
+            "email": null,
+            "password": "<BCrypt encoded password>",
+            "bindingName": "user.user2",
+            "roles": []
+          }
+        ]
       ```
  
 * **Error Response:**
