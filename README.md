@@ -1,6 +1,6 @@
 # API REST
 
-This documentation contains all the endpoints in this application and how to use them.
+This documentation contains all the endpoints in the chat application and how to use them.
 
 ## User
 
@@ -16,7 +16,14 @@ This endpoint creates a new user and returns the user that was created.
   
 * **URL Params:** `None`
 
-* **Data Params** `None`
+* **Body:**
+    ```
+      {
+        "username": "user1",
+        "email": "user1@gmail.com",
+        "password":  "<password>",
+      }
+    ```
 
 * **Success Response:**
 
@@ -24,14 +31,12 @@ This endpoint creates a new user and returns the user that was created.
     **Content:**   
       ```
         {
-            {
-              "id": 30,
-              "username": "user1",
-              "email": null,
-              "password":  "<BCrypt encoded password>",
-              "bindingName": "user.user1",
-              "roles": []
-            }
+          "id": 30,
+          "username": "user1",
+          "email": "user1@gmail.com",
+          "password":  "<BCrypt encoded password>",
+          "bindingName": "user.user1",
+          "roles": []
         }
       ```
  
@@ -72,7 +77,7 @@ This endpoint returns all the users registered in the application.
   
 * **URL Params:** `None`
 
-* **Data Params** `None`
+* **Body** `None`
 
 * **Success Response:**
 
@@ -129,7 +134,7 @@ This endpoint creates a new chatroom and returns the chatroom that was created.
   
 * **URL Params:** `None`
 
-* **Data Params** `None`
+* **Body** `None`
 
 * **Success Response:**
 
@@ -185,7 +190,7 @@ This endpoint returns all the chatrooms in the application.
   
 * **URL Params:** `None`
 
-* **Data Params** `None`
+* **Body** `None`
 
 * **Success Response:**
 
