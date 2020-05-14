@@ -2,17 +2,13 @@ package chatdist.backend.api;
 
 import chatdist.backend.model.User;
 import chatdist.backend.repository.UserRepository;
-import chatdist.backend.util.RabbitMQConstants;
-import com.rabbitmq.client.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -21,23 +17,12 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private Channel channel;
-
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(path="/add")
-    public @ResponseBody User addNewUser(@RequestBody User user) throws IOException {
+    public @ResponseBody User addNewUser(@RequestBody User user) {
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
         if (!optionalUser.isPresent()) {
             User newUser = new User(user.getUsername(), user.getPassword());
-            channel.queueDeclare(newUser.getBindingName(),true,false,false,null);
-            channel.queueBind(newUser.getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
-                    newUser.getBindingName());
-            channel.queueBind(newUser.getBindingName(),RabbitMQConstants.EXCHANGE_NAME,
-                    RabbitMQConstants.ADMIN_ROUTING_KEY);
             User savedUser = userRepository.save(newUser);
             return savedUser;
         }
