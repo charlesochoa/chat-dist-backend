@@ -290,7 +290,16 @@ This endpoint returns all the chatrooms in the application.
         [
           {
             "id": 1,
-            "users": [],
+            "users": [
+              {
+                "id": 10,
+                "username": "user10",
+                "email": "user10@gmail.com",
+                "password": "<BCrypt encoded password>",
+                "bindingName": "user.user10",
+                "roles": []
+              }
+            ],
             "admin": {
               "id": 10,
               "username": "user10",
@@ -304,7 +313,16 @@ This endpoint returns all the chatrooms in the application.
           },
           {
             "id": 2,
-            "users": [],
+            "users": [
+              {
+                "id": 10,
+                "username": "user10",
+                "email": "user10@gmail.com",
+                "password": "<BCrypt encoded password>",
+                "bindingName": "user.user10",
+                "roles": []
+              }
+            ],
             "admin": {
               "id": 10,
               "username": "user10",
