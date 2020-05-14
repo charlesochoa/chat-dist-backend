@@ -16,7 +16,7 @@ This endpoint returns all the users registered in the application.
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200 OK` <br />
     **Content:**   
       ```
         {
@@ -33,7 +33,7 @@ This endpoint returns all the users registered in the application.
  
 * **Error Response:**
 
-* **Code:** 403 FORBIDDEN <br />
+  * **Code:** `403 FORBIDDEN` <br />
     **Content:**
       ```
         {
