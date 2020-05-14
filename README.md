@@ -69,7 +69,7 @@ This endpoint creates a new user and returns the user that was created.
 
 ### `/users/all`
 ----
-This endpoint returns all the users registered in the application.
+This endpoint returns all the users in the application.
 
 * **Method:** `GET`
 
@@ -142,14 +142,12 @@ This endpoint creates a new chatroom and returns the chatroom that was created.
     **Content:**   
       ```
         {
-            {
-              "id": 30,
-              "username": "user1",
-              "email": null,
-              "password":  "<BCrypt encoded password>",
-              "bindingName": "user.user1",
-              "roles": []
-            }
+          "id": 30,
+          "username": "user1",
+          "email": "user1@gmail.com",
+          "password":  "<BCrypt encoded password>",
+          "bindingName": "user.user1",
+          "roles": []
         }
       ```
  
@@ -233,3 +231,118 @@ This endpoint returns all the chatrooms in the application.
         }
       ```
 
+## Direct Message
+
+The model used to represent the direct message in the chat application, the direct message is 
+a message between two different users.
+
+### `/direct-messages/all`
+----
+This endpoint returns all the direct messages in the application.
+
+* **Method:** `GET`
+
+* **Headers:** `Authorization: Bearer <JWT token>`
+  
+* **URL Params:** `None`
+
+* **Body** `None`
+
+* **Success Response:**
+
+  * **Code:** `200 OK` <br />
+    **Content:**   
+      ```
+        {
+         [
+            {
+              "id": 1,
+              "username": "user1",
+              "email": null,
+              "password": "<BCrypt encoded password>",
+              "bindingName": "user.user1",
+              "roles": []
+            },
+            {
+              "id": 2,
+              "username": "user2",
+              "email": null,
+              "password": "<BCrypt encoded password>",
+              "bindingName": "user.user2",
+              "roles": []
+            }
+          ]
+        }
+      ```
+ 
+* **Error Response:**
+
+  * **Code:** `403 FORBIDDEN` <br />
+    **Content:**
+      ```
+        {
+          "timestamp": "2020-05-14T15:11:57.677+0000",
+          "status": 403,
+          "error": "Forbidden",
+          "message": "Access Denied",
+          "path": "/direct-messages/all"
+        }
+      ```
+
+## Group Message
+
+The model used to represent the group message in the chat application, the group message sent from an user 
+to a chatroom.
+
+### `/group-messages/all`
+----
+This endpoint returns all the group messages in the application.
+
+* **Method:** `GET`
+
+* **Headers:** `Authorization: Bearer <JWT token>`
+  
+* **URL Params:** `None`
+
+* **Body** `None`
+
+* **Success Response:**
+
+  * **Code:** `200 OK` <br />
+    **Content:**   
+      ```
+        {
+         [
+            {
+              "id": 1,
+              "username": "user1",
+              "email": null,
+              "password": "<BCrypt encoded password>",
+              "bindingName": "user.user1",
+              "roles": []
+            },
+            {
+              "id": 2,
+              "username": "user2",
+              "email": null,
+              "password": "<BCrypt encoded password>",
+              "bindingName": "user.user2",
+              "roles": []
+            }
+          ]
+        }
+      ```
+ 
+* **Error Response:**
+
+  * **Code:** `403 FORBIDDEN` <br />
+    **Content:**
+      ```
+        {
+          "timestamp": "2020-05-14T15:11:57.677+0000",
+          "status": 403,
+          "error": "Forbidden",
+          "message": "Access Denied",
+          "path": "/group-messages/all"
+        }
+      ```
