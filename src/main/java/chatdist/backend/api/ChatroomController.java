@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @RestController
-@RequestMapping(path="/chatroom")
+@RequestMapping(path="/chatrooms")
 public class ChatroomController {
     @Autowired
     private ChatroomRepository chatroomRepository;

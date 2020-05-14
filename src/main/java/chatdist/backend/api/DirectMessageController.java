@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 @RestController
-@RequestMapping(path="/direct-message")
+@RequestMapping(path="/direct-messages")
 public class DirectMessageController {
     @Autowired
     private DirectMessageRepository directMessageRepository;

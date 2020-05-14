@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 @RestController
-@RequestMapping(path="/group-message")
+@RequestMapping(path="/group-messages")
 public class GroupMessageController {
     @Autowired
     private GroupMessageRepository groupMessageRepository;
