@@ -1,3 +1,7 @@
+# API REST
+
+This documentation contains all the endpoints in this application and how to use them.
+
 ## User
 
 The model user to represent our chat users.
@@ -22,10 +26,10 @@ This endpoint creates a new user and returns the user that was created.
         {
             {
               "id": 30,
-              "username": "usuario",
+              "username": "user1",
               "email": null,
-              "password":  "$2a$10$zuUhpyO76h55LeDfnrF5j.vaiAH8VBocyygLQiCX/uYKa4gA/Cs5u",
-              "bindingName": "user.usuario",
+              "password":  "<BCrypt encoded password>",
+              "bindingName": "user.user1",
               "roles": []
             }
         }
