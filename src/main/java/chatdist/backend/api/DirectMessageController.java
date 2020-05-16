@@ -38,16 +38,19 @@ public class DirectMessageController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    @MessageMapping("/send-direct-message")
-    public @ResponseBody void sendMessage(@Payload DirectMessage message) throws IOException, TimeoutException {
+    @PostMapping("/send-direct-message")
+    public @ResponseBody DirectMessage sendMessage(@RequestBody DirectMessage message) throws IOException, TimeoutException {
+        System.out.println("Trying send direct message!");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String jsonStr = objectMapper.writeValueAsString(message);
             channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, message.getReceiver().getBindingName(),
                     null, jsonStr.getBytes());
-            directMessageRepository.save(message);
+            DirectMessage newM = directMessageRepository.save(message);
+            return newM;
         } catch (IOException e) {
             e.printStackTrace();
+            throw  e;
         }
     }
 
