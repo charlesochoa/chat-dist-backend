@@ -9,8 +9,11 @@ import chatdist.backend.util.RabbitMQConstants;
 import chatdist.backend.util.UploadFileResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
+import jdk.internal.loader.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -39,15 +42,15 @@ public class DirectMessageController {
     private FileStorageService fileStorageService;
 
     @PostMapping("/send-direct-message")
-    public @ResponseBody DirectMessage sendMessage(@RequestBody DirectMessage message) throws IOException, TimeoutException {
-        System.out.println("Trying send direct message!");
+    public @ResponseBody DirectMessage sendMessage(@RequestBody DirectMessage message)
+            throws IOException, TimeoutException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String jsonStr = objectMapper.writeValueAsString(message);
             channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, message.getReceiver().getBindingName(),
                     null, jsonStr.getBytes());
-            DirectMessage newM = directMessageRepository.save(message);
-            return newM;
+            DirectMessage newDirectMessage = directMessageRepository.save(message);
+            return newDirectMessage;
         } catch (IOException e) {
             e.printStackTrace();
             throw  e;
@@ -55,7 +58,7 @@ public class DirectMessageController {
     }
 
     @PostMapping("/send-file")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestBody DirectMessage message) {
         String fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -93,4 +96,28 @@ public class DirectMessageController {
                 HttpStatus.NOT_FOUND, "Direct message not found"
         );
     }
+
+//    @GetMapping("/downloadFile/{fileName:.+}")
+//    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+//        // Load file as Resource
+//        Resource resource = (Resource) fileStorageService.loadFileAsResource(fileName);
+//
+//        // Try to determine file's content type
+//        String contentType = null;
+//        try {
+//            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+//        } catch (IOException ex) {
+//            System.out.println("Could not determine file type.");
+//        }
+//
+//        // Fallback to the default content type if type could not be determined
+//        if(contentType == null) {
+//            contentType = "application/octet-stream";
+//        }
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+//                .body(resource);
+//    }
 }

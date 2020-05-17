@@ -13,8 +13,8 @@ public class DirectMessage extends BaseMessage {
     protected DirectMessage() {
     }
 
-    public DirectMessage(String content, Boolean isFile, User sender, User receiver) {
-        super(content, isFile, sender);
+    public DirectMessage(String content, Boolean text, User sender, User receiver) {
+        super(content, text, sender);
         receiver = receiver;
     }
 

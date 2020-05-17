@@ -2,6 +2,7 @@ package chatdist.backend.api;
 
 import chatdist.backend.model.Chatroom;
 import chatdist.backend.model.GroupMessage;
+import chatdist.backend.model.User;
 import chatdist.backend.repository.ChatroomRepository;
 import chatdist.backend.repository.GroupMessageRepository;
 import chatdist.backend.util.RabbitMQConstants;
@@ -31,21 +32,28 @@ public class GroupMessageController {
     @Autowired
     private Channel channel;
 
-    @PostMapping("/send-group-message")
-    public @ResponseBody GroupMessage sendGroupMessage(@RequestBody GroupMessage message) throws IOException, TimeoutException {
-        System.out.println("Trying to send a group message");
-        System.out.println(message);
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String jsonStr = objectMapper.writeValueAsString(message);
-            channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, message.getChatRoom().getBindingName(),
-                    null, jsonStr.getBytes());
-            GroupMessage newM = groupMessageRepository.save(message);
-            return newM;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    @PostMapping("/send-group-message/{chatroomId}")
+    public @ResponseBody GroupMessage sendGroupMessage(@RequestBody GroupMessage message,
+                                                       @PathVariable Long chatroomId)
+            throws IOException, TimeoutException {
+        Optional<Chatroom> optionalChatroom = chatroomRepository.findById(chatroomId);
+        if (optionalChatroom.isPresent()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                String jsonStr = objectMapper.writeValueAsString(message);
+                message.setChatroom(optionalChatroom.get());
+                channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, message.getChatRoom().getBindingName(),
+                        null, jsonStr.getBytes());
+                groupMessageRepository.save(message);
+                return message;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Chatroom not found"
+        );
     }
 
     @GetMapping(path="/all")

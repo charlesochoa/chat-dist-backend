@@ -38,6 +38,8 @@ public class ChatroomController {
             chatroomRepository.save(newChatroom);
             newChatroom.setBindingName("chatroom." + newChatroom.getId().toString() + "." + admin.getUsername());
             chatroomRepository.save(newChatroom);
+            channel.queueBind(admin.getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
+                    newChatroom.getBindingName());
             return newChatroom;
         }
         throw new ResponseStatusException(

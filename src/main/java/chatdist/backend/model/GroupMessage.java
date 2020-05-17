@@ -4,15 +4,14 @@ import javax.persistence.*;
 
 @Entity
 public class GroupMessage extends BaseMessage {
-    @OneToOne
-    @JoinColumn(unique = true)
+    @ManyToOne
     private Chatroom chatroom;
 
     protected GroupMessage() {
     }
 
-    public GroupMessage(String content, Boolean isFile, User sender, Chatroom chatroom) {
-        super(content, isFile, sender);
+    public GroupMessage(String content, Boolean text, User sender, Chatroom chatroom) {
+        super(content, text, sender);
         chatroom = chatroom;
     }
 
@@ -29,5 +28,9 @@ public class GroupMessage extends BaseMessage {
 
     public Chatroom getChatRoom() {
         return chatroom;
+    }
+
+    public void setChatroom(Chatroom chatroom) {
+        this.chatroom = chatroom;
     }
 }
