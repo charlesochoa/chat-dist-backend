@@ -38,6 +38,9 @@ public class Chatroom {
 
     @Override
     public String toString() {
+        System.out.println("Chatroom String");
+        System.out.println(getId());
+        System.out.println(getName());
         return String.format(
                 "Chatroom[id=%d, name='%s']",
                 id, name);

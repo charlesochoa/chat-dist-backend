@@ -31,16 +31,20 @@ public class GroupMessageController {
     @Autowired
     private Channel channel;
 
-    @MessageMapping("/send-group-message")
-    public @ResponseBody void sendGroupMessage(@Payload GroupMessage message) throws IOException, TimeoutException {
+    @PostMapping("/send-group-message")
+    public @ResponseBody GroupMessage sendGroupMessage(@RequestBody GroupMessage message) throws IOException, TimeoutException {
+        System.out.println("Trying to send a group message");
+        System.out.println(message);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String jsonStr = objectMapper.writeValueAsString(message);
             channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, message.getChatRoom().getBindingName(),
                     null, jsonStr.getBytes());
-            groupMessageRepository.save(message);
+            GroupMessage newM = groupMessageRepository.save(message);
+            return newM;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
