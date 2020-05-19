@@ -9,7 +9,7 @@ import chatdist.backend.util.RabbitMQConstants;
 import chatdist.backend.util.UploadFileResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
-import jdk.internal.loader.Resource;
+import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
@@ -57,20 +58,6 @@ public class DirectMessageController {
         }
     }
 
-    @PostMapping("/upload-file")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-
-        String fileName = fileStorageService.storeFile(file);
-
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
-
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
-    }
-
     @GetMapping(path="/all")
     public @ResponseBody Iterable<DirectMessage> getAllDirectMessages() {
         return directMessageRepository.findAll();
@@ -97,28 +84,4 @@ public class DirectMessageController {
                 HttpStatus.NOT_FOUND, "Direct message not found"
         );
     }
-
-//    @GetMapping("/downloadFile/{fileName:.+}")
-//    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-//        // Load file as Resource
-//        Resource resource = (Resource) fileStorageService.loadFileAsResource(fileName);
-//
-//        // Try to determine file's content type
-//        String contentType = null;
-//        try {
-//            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-//        } catch (IOException ex) {
-//            System.out.println("Could not determine file type.");
-//        }
-//
-//        // Fallback to the default content type if type could not be determined
-//        if(contentType == null) {
-//            contentType = "application/octet-stream";
-//        }
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType(contentType))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-//                .body(resource);
-//    }
 }
