@@ -57,8 +57,9 @@ public class DirectMessageController {
         }
     }
 
-    @PostMapping("/send-file")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestBody DirectMessage message) {
+    @PostMapping("/upload-file")
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
+
         String fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
