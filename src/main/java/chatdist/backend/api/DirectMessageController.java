@@ -11,6 +11,7 @@ import com.rabbitmq.client.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,16 +31,30 @@ public class DirectMessageController {
     @Autowired
     private Channel channel;
 
-    @Autowired
-    private FileStorageService fileStorageService;
-
-    @PostMapping("/send-direct-message")
+    @PostMapping("/send")
     public @ResponseBody DirectMessage sendMessage(@RequestBody DirectMessage message)
             throws IOException, TimeoutException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String jsonStr = objectMapper.writeValueAsString(message);
             channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, message.getReceiver().getBindingName(),
+                    null, jsonStr.getBytes());
+            DirectMessage newDirectMessage = directMessageRepository.save(message);
+            return newDirectMessage;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw  e;
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/send-all")
+    public @ResponseBody DirectMessage sendMessageToAll(@RequestBody DirectMessage message)
+            throws IOException, TimeoutException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String jsonStr = objectMapper.writeValueAsString(message);
+            channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, RabbitMQConstants.ADMIN_ROUTING_KEY,
                     null, jsonStr.getBytes());
             DirectMessage newDirectMessage = directMessageRepository.save(message);
             return newDirectMessage;

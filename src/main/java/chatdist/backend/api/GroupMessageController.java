@@ -29,7 +29,7 @@ public class GroupMessageController {
     @Autowired
     private Channel channel;
 
-    @PostMapping("/send-group-message/{chatroomId}")
+    @PostMapping("/send/{chatroomId}")
     public @ResponseBody GroupMessage sendGroupMessage(@RequestBody GroupMessage message,
                                                        @PathVariable Long chatroomId)
             throws IOException, TimeoutException {
