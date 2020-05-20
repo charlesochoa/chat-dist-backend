@@ -1,4 +1,4 @@
-package chatdist.backend.api;
+package chatdist.backend.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +9,8 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Component
-public class WebSocketEventListenerController {
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListenerController.class);
+public class WebSocketEventListener {
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {

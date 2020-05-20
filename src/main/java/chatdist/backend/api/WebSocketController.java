@@ -1,5 +1,6 @@
 package chatdist.backend.api;
 
+import chatdist.backend.model.DirectMessage;
 import chatdist.backend.model.User;
 import chatdist.backend.util.RabbitMQConstants;
 import com.rabbitmq.client.Channel;
@@ -7,6 +8,7 @@ import com.rabbitmq.client.GetResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
