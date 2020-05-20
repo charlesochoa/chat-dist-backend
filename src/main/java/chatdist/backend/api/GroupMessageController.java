@@ -2,7 +2,6 @@ package chatdist.backend.api;
 
 import chatdist.backend.model.Chatroom;
 import chatdist.backend.model.GroupMessage;
-import chatdist.backend.model.User;
 import chatdist.backend.repository.ChatroomRepository;
 import chatdist.backend.repository.GroupMessageRepository;
 import chatdist.backend.util.RabbitMQConstants;
@@ -11,8 +10,6 @@ import com.rabbitmq.client.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
