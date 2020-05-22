@@ -1,5 +1,6 @@
 package chatdist.backend.config;
 
+import chatdist.backend.model.User;
 import chatdist.backend.util.RabbitMQConstants;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -11,7 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 @Configuration
 @Component
@@ -20,6 +24,7 @@ public class RabbitMQConfig {
     public static String password;
     public static String vHost;
     public static String uri;
+    private Set<User> queues;
 
     @Value("${rabbitmq.username}")
     public void setUsername(String value) {
@@ -64,4 +69,21 @@ public class RabbitMQConfig {
         AMQP.Exchange.DeclareOk ok = channel.exchangeDeclare(RabbitMQConstants.EXCHANGE_NAME,"direct");
         return channel;
     }
+
+    @Bean
+    public Set<User> queues() {
+        queues = new HashSet<>();
+        return queues;
+    }
+
+//    public void addToQueue(String queue) {
+//        queues.add(queue);
+//    }
+//
+//    public void removeFromQueue(String queue) {
+//        queues =
+//                queues.stream()
+//                        .filter(e -> e != queue)
+//                        .collect(Collectors.toSet());
+//    }
 }

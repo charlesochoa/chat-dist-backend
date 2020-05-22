@@ -12,6 +12,9 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.Resource;
+import java.util.Set;
+
 @Controller
 public class WebSocketController {
     @Autowired
@@ -20,20 +23,27 @@ public class WebSocketController {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
+    @Resource(name = "queues")
+    private Set<User> queues;
+
     @MessageMapping("/receive-message")
     public void receive(@Payload User user) throws Exception {
         System.out.println("Preparing reception in queue: " + user.getBindingName());
-        channel.queueDeclare(user.getBindingName(), true, false, false, null);
-        GetResponse response = channel.basicGet(user.getBindingName(), RabbitMQConstants.AUTO_ACK);
-        do {
-            if (response == null) {
-                Thread.sleep(1000);
-            } else {
-                byte[] body = response.getBody();
-                this.messagingTemplate.convertAndSend("/topic/chat/" + user.getUsername(),
-                        (String) new String(body));
-            }
-            response = channel.basicGet(user.getBindingName(), RabbitMQConstants.AUTO_ACK);
-        } while (true);
+        queues.add(user);
+        if(queues.size()==1){
+
+            do {
+                for (User loggedIn: queues) {
+                    GetResponse response = channel.basicGet(loggedIn.getBindingName(), RabbitMQConstants.AUTO_ACK);
+                    if (response == null) {
+                        Thread.sleep(100);
+                    } else {
+                        byte[] body = response.getBody();
+                        this.messagingTemplate.convertAndSend("/topic/chat/" + loggedIn.getUsername(),
+                                (String) new String(body));
+                    }
+                }
+            } while (queues.size() > 0);
+        }
     }
 }

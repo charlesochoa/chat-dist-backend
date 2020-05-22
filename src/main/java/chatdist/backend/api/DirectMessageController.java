@@ -47,7 +47,7 @@ public class DirectMessageController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/send-all")
     public @ResponseBody DirectMessage sendMessageToAll(@RequestBody DirectMessage message)
             throws IOException, TimeoutException {
