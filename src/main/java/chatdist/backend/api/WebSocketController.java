@@ -30,7 +30,8 @@ public class WebSocketController {
     public void receive(@Payload User user) throws Exception {
         System.out.println("Preparing reception in queue: " + user.getBindingName());
         queues.add(user);
-        if(queues.size()==1){
+        System.out.println("Elements in QUEUE: " + queues);
+        if(queues.size()<=1){
 
             do {
                 for (User loggedIn: queues) {
@@ -44,6 +45,9 @@ public class WebSocketController {
                     }
                 }
             } while (queues.size() > 0);
+            System.out.println("Receive going to close! ");
+        } else {
+            System.out.println("Queue larger than 1");
         }
     }
 }
