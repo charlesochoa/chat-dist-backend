@@ -29,8 +29,10 @@ public class FileStorageService {
 
     @Autowired
     public FileStorageService() {
-        this.fileStorageLocation = Paths.get("/upload")
+        this.fileStorageLocation = Paths.get("./upload")
                 .toAbsolutePath().normalize();
+        System.out.println("this.fileStorageLocation.toAbsolutePath()");
+        System.out.println(this.fileStorageLocation.toAbsolutePath());
 
         try {
             Files.createDirectories(this.fileStorageLocation);
