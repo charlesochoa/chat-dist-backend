@@ -13,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
+import java.util.ConcurrentModificationException;
 import java.util.Set;
 
 @Controller
@@ -32,17 +33,20 @@ public class WebSocketController {
         queues.add(user);
         System.out.println("Elements in QUEUE: " + queues);
         if(queues.size()<=1){
-
             do {
-                for (User loggedIn: queues) {
-                    GetResponse response = channel.basicGet(loggedIn.getBindingName(), RabbitMQConstants.AUTO_ACK);
-                    if (response == null) {
-                        Thread.sleep(100);
-                    } else {
-                        byte[] body = response.getBody();
-                        this.messagingTemplate.convertAndSend("/topic/chat/" + loggedIn.getUsername(),
-                                (String) new String(body));
+                try {
+                    for (User loggedIn : queues) {
+                        GetResponse response = channel.basicGet(loggedIn.getBindingName(), RabbitMQConstants.AUTO_ACK);
+                        if (response == null) {
+                            Thread.sleep(100);
+                        } else {
+                            byte[] body = response.getBody();
+                            this.messagingTemplate.convertAndSend("/topic/chat/" + loggedIn.getUsername(),
+                                    (String) new String(body));
+                        }
                     }
+                } catch (ConcurrentModificationException e) {
+                    continue;
                 }
             } while (queues.size() > 0);
             System.out.println("Receive going to close! ");
