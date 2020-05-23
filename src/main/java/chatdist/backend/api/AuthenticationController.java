@@ -30,7 +30,7 @@ public class AuthenticationController {
     public @ResponseBody User signUp(@RequestBody User user) throws IOException, TimeoutException {
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
         if (!optionalUser.isPresent()) {
-            User newUser = new User(user.getUsername(), user.getPassword());
+            User newUser = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()));
             channel.queueDeclare(newUser.getBindingName(),true,false,false,null);
             channel.queueBind(newUser.getBindingName(),RabbitMQConstants.EXCHANGE_NAME,
                     newUser.getBindingName());
