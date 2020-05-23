@@ -74,8 +74,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(
-                "{\"" + JWTConstants.HEADER_STRING + "\":\"" + JWTConstants.TOKEN_PREFIX + token + "\", \"username\": \"" +
-                        ((CustomUserDetails) authResult.getPrincipal()).getUsername()+ "\'}"
+                "{\"" + JWTConstants.HEADER_STRING + "\":\"" + JWTConstants.TOKEN_PREFIX + token + "\"}"
         );
     }
 }

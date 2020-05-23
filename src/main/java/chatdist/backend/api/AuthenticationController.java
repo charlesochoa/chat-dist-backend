@@ -45,16 +45,10 @@ public class AuthenticationController {
     }
 
     @PostMapping(path="/sign-in")
-    public @ResponseBody User signIn(@RequestBody User user) throws IOException, TimeoutException {
-        System.out.println("SIGNING IN");
+    public @ResponseBody User signIn(@RequestBody User user) {
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
-        System.out.println(user.getUsername());
         if (optionalUser.isPresent()) {
-            System.out.println("User Found!");
-            System.out.println(optionalUser.get().getPassword());
-            System.out.println(passwordEncoder.encode(user.getPassword()));
-            if(optionalUser.get().getPassword().equals( user.getPassword())){
-
+            if (passwordEncoder.matches(user.getPassword(), optionalUser.get().getPassword())) {
                 return optionalUser.get();
             }
             return null;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,17 +18,31 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(path="/add")
     public @ResponseBody User addNewUser(@RequestBody User user) {
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
         if (!optionalUser.isPresent()) {
-            User newUser = new User(user.getUsername(), user.getPassword());
+            User newUser = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()));
             User savedUser = userRepository.save(newUser);
             return savedUser;
         }
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Username already exists"
+        );
+    }
+
+    @GetMapping(path="/{username}")
+    public @ResponseBody User getUserByUsername(@PathVariable String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "User not found"
         );
     }
 

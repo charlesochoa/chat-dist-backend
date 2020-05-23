@@ -25,7 +25,7 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-
+@Order(1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().configurationSource(corsConfigurationSource())
                 .and().csrf().disable().authorizeRequests()
-                .antMatchers("/auth/*", "/login", "/ws/*", "/files/download/*").permitAll()
+                .antMatchers("/auth/**", "/login", "/ws/**", "/files/download/**").permitAll()
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -31,9 +31,6 @@ public class FileStorageService {
     public FileStorageService() {
         this.fileStorageLocation = Paths.get("./upload")
                 .toAbsolutePath().normalize();
-        System.out.println("this.fileStorageLocation.toAbsolutePath()");
-        System.out.println(this.fileStorageLocation.toAbsolutePath());
-
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
@@ -42,15 +39,11 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file) {
-        // Normalize file name
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         try {
-            // Check if the file's name contains invalid characters
             if(filename.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + filename);
             }
-
-            // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(filename);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return filename;

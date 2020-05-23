@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 @Configuration
 @Component
@@ -57,7 +56,6 @@ public class RabbitMQConfig {
         factory.setVirtualHost(vHost);
         factory.setHost(RabbitMQConstants.HOST_NAME);
         factory.setPort(RabbitMQConstants.PORT_NUMBER);
-
         try {
             factory.setUri(uri);
         } catch (Exception e) {
@@ -75,15 +73,4 @@ public class RabbitMQConfig {
         queues = new HashSet<>();
         return queues;
     }
-
-//    public void addToQueue(String queue) {
-//        queues.add(queue);
-//    }
-//
-//    public void removeFromQueue(String queue) {
-//        queues =
-//                queues.stream()
-//                        .filter(e -> e != queue)
-//                        .collect(Collectors.toSet());
-//    }
 }

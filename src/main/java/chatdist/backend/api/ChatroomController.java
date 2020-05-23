@@ -78,16 +78,11 @@ public class ChatroomController {
     @PostMapping(path="/{id}/add-user/{userId}")
     public @ResponseBody Chatroom addUserToChatroom(@PathVariable Long id,
                                                     @PathVariable Long userId) throws IOException {
-        System.out.println(id);
-        System.out.println(userId);
         Optional<Chatroom> optionalChatroom = chatroomRepository.findById(id);
 
         if (optionalChatroom.isPresent()) {
-            System.out.println(optionalChatroom.get());
-
             Optional<User> optionalUser = userRepository.findById(userId);
             if (optionalUser.isPresent()) {
-                System.out.println(optionalUser.get());
                 optionalChatroom.get().addUser(optionalUser.get());
                 channel.queueBind(optionalUser.get().getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
                         optionalChatroom.get().getBindingName());

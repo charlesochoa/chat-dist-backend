@@ -1,6 +1,7 @@
 package chatdist.backend.filter;
 
 import chatdist.backend.util.JWTConstants;
+import chatdist.backend.util.JWTUtils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,10 +40,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(JWTConstants.HEADER_STRING);
         if (token != null) {
             // parse the token.
-            String user = JWT.require(Algorithm.HMAC512(JWTConstants.secret.getBytes()))
-                    .build()
-                    .verify(token.replace(JWTConstants.TOKEN_PREFIX, ""))
-                    .getSubject();
+            String user = JWTUtils.getUserFromToken(token);
 
             if (user != null) {
                 return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
