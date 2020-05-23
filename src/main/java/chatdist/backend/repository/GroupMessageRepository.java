@@ -1,9 +1,7 @@
 package chatdist.backend.repository;
 
 import chatdist.backend.model.Chatroom;
-import chatdist.backend.model.DirectMessage;
 import chatdist.backend.model.GroupMessage;
-import chatdist.backend.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 

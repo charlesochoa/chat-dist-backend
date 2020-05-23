@@ -1,6 +1,8 @@
 package chatdist.backend.api;
 
+import chatdist.backend.model.Role;
 import chatdist.backend.model.User;
+import chatdist.backend.repository.RoleRepository;
 import chatdist.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -27,8 +32,14 @@ public class UserController {
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
         if (!optionalUser.isPresent()) {
             User newUser = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()));
-            User savedUser = userRepository.save(newUser);
-            return savedUser;
+            Optional<Role> optionalRole = roleRepository.findByValue("NORMAL");
+            if (optionalRole.isPresent()) {
+                User savedUser = userRepository.save(newUser);
+                return savedUser;
+            }
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Role 'NORMAL' not found"
+            );
         }
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Username already exists"
@@ -49,6 +60,11 @@ public class UserController {
     @GetMapping(path="/all")
     public @ResponseBody Iterable<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @GetMapping(path="/all/normal")
+    public @ResponseBody Iterable<User> getAllNormalUsers() {
+        return userRepository.findAllNormalUsers();
     }
 
     @PutMapping(path="/{id}")
