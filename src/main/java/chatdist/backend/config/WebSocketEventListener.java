@@ -2,10 +2,6 @@ package chatdist.backend.config;
 
 import chatdist.backend.model.User;
 import chatdist.backend.repository.UserRepository;
-import chatdist.backend.util.RabbitMQConstants;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.GetResponse;
-import org.graalvm.compiler.lir.LIRInstruction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.messaging.support.NativeMessageHeaderAccessor;
@@ -24,9 +18,7 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Configuration
 @Component
