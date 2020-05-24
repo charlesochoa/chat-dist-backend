@@ -117,4 +117,18 @@ public class User {
     public void addRole(Role role) {
         roles.add(role);
     }
+
+    public boolean equals(Object obj){
+        if (obj instanceof User) {
+            User user = (User) obj;
+            return this.username.equals(user.username);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
+    }
 }
