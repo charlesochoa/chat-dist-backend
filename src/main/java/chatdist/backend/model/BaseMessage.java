@@ -15,6 +15,7 @@ public class BaseMessage {
 
     private Timestamp time;
 
+    @Column(name = "content", columnDefinition = "varchar(500)")
     private String content;
 
     private Boolean text;
