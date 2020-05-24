@@ -5,7 +5,6 @@ import chatdist.backend.repository.ChatroomRepository;
 import chatdist.backend.repository.DirectMessageRepository;
 import chatdist.backend.repository.GroupMessageRepository;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -74,8 +73,6 @@ public class StatisticsUtils {
         }
         long minutes = differenceInMinutes(minTimestamp, maxTimestamp);
 
-        System.out.println(minutes);
-        System.out.println(totalMessages);
         if (minutes > 0.0) {
             return ((float) totalMessages) / minutes;
         }

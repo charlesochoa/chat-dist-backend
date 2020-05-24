@@ -71,11 +71,6 @@ public class StatisticsController {
                 e.printStackTrace();
             }
             Thread.sleep(1000);
-            System.out.println(queues);
-            System.out.println(user);
-            System.out.println(queues.contains(user));
-
-
         } while (queues.contains(user));
 
     }

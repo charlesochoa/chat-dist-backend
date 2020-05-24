@@ -1,6 +1,7 @@
 package chatdist.backend.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -41,6 +42,7 @@ public class User {
         this.username = username;
         this.bindingName = "user." + username;
         this.password = password;
+        this.roles = new HashSet<>();
     }
 
     public User(String username, String email, String password) {
@@ -48,6 +50,7 @@ public class User {
         this.bindingName = "user." + username;
         this.email = email;
         this.password = password;
+        this.roles = new HashSet<>();
     }
 
     public User(User user) {
