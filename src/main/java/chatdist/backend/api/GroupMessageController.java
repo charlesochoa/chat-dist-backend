@@ -70,7 +70,7 @@ public class GroupMessageController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(path="/{id}")
     public ResponseEntity<Void> deleteGroupMessage(@PathVariable Long id) {
         if (groupMessageRepository.existsById(id)) {

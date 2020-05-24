@@ -19,6 +19,8 @@ public class BaseMessage {
 
     private Boolean text;
 
+    private long bytes;
+
     protected BaseMessage() {
     }
 
@@ -27,6 +29,7 @@ public class BaseMessage {
         this.text = text;
         this.sender = sender;
         this.time = new Timestamp(System.currentTimeMillis());
+        this.bytes = 0;
     }
 
     public Long getId() {
@@ -51,6 +54,14 @@ public class BaseMessage {
 
     public void setText(Boolean text) {
         this.text = text;
+    }
+
+    public long getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(long bytes) {
+        this.bytes = bytes;
     }
 
 }

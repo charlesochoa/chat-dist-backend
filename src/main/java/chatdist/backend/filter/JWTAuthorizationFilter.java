@@ -1,9 +1,16 @@
 package chatdist.backend.filter;
 
+import chatdist.backend.config.WebSocketEventListener;
+import chatdist.backend.model.CustomUserDetails;
+import chatdist.backend.model.User;
+import chatdist.backend.repository.UserRepository;
 import chatdist.backend.util.JWTConstants;
 import chatdist.backend.util.JWTUtils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,10 +22,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+
+    private UserRepository userRepository;
+
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -41,9 +54,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         if (token != null) {
             // parse the token.
             String user = JWTUtils.getUserFromToken(token);
-
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+            String username = JWTUtils.getUsernameFromToken(token);
+            logger.info("Found user {}", username);
+            if (user != null && username != null) {
+                Optional<User> optionalUser = userRepository.findByUsername(username);
+                if (optionalUser.isPresent()) {
+                    CustomUserDetails customUserDetails = new CustomUserDetails(optionalUser.get());
+                    return new UsernamePasswordAuthenticationToken(user, null,
+                            customUserDetails.getAuthorities());
+                }
+                return null;
             }
             return null;
         }

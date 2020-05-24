@@ -112,7 +112,7 @@ public class ChatroomController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(path="/{id}")
     public ResponseEntity<Void> deleteChatroom(@PathVariable Long id) {
         if (chatroomRepository.existsById(id)) {

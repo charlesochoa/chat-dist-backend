@@ -47,7 +47,7 @@ public class DirectMessageController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/send-all")
     public @ResponseBody DirectMessage sendMessageToAll(@RequestBody DirectMessage message)
             throws IOException, TimeoutException {
@@ -80,7 +80,7 @@ public class DirectMessageController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(path="/{id}")
     public ResponseEntity<Void> deleteDirectMessage(@PathVariable Long id) {
         if (directMessageRepository.existsById(id)) {
