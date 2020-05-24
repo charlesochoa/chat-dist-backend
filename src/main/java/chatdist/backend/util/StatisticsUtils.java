@@ -69,14 +69,15 @@ public class StatisticsUtils {
         }
 
         if (minTimestamp == null || maxTimestamp == null) {
+            System.out.println("Some of the timestamps are null");
             return (float) 0.0;
         }
         long minutes = differenceInMinutes(minTimestamp, maxTimestamp);
 
         System.out.println(minutes);
         System.out.println(totalMessages);
-        if (minutes > 0) {
-            return ((long) totalMessages) / minutes;
+        if (minutes > 0.0) {
+            return ((float) totalMessages) / minutes;
         }
         return (float) 0.0;
     }
