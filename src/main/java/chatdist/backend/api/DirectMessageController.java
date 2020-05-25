@@ -4,7 +4,6 @@ import chatdist.backend.model.DirectMessage;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.DirectMessageRepository;
 import chatdist.backend.repository.UserRepository;
-import chatdist.backend.service.FileStorageService;
 import chatdist.backend.util.RabbitMQConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;

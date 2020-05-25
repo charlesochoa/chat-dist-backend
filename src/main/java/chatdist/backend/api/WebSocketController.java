@@ -19,7 +19,7 @@ import java.util.Set;
 
 @Controller
 public class WebSocketController {
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
 
     @Autowired
     private Channel channel;
