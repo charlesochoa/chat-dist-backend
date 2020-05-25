@@ -5,7 +5,9 @@ import chatdist.backend.repository.ChatroomRepository;
 import chatdist.backend.repository.DirectMessageRepository;
 import chatdist.backend.repository.GroupMessageRepository;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 public class StatisticsUtils {
@@ -24,6 +26,51 @@ public class StatisticsUtils {
         this.directMessageRepository = directMessageRepository;
         this.groupMessageRepository = groupMessageRepository;
         this.queues = queues;
+    }
+
+    public static Timestamp timeOneHourAgo(){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        return new Timestamp(timestamp.getTime() - (MILLIS_PER_SECOND*
+                SECONDS_PER_MINUTE*MINUTES_PER_HOUR));
+    }
+    public static Timestamp timeOneDayAgo(){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        System.out.println("new Timestamp(timestamp.getTime() - (MILLIS_PER_SECOND*SECONDS_PER_MINUTE*MINUTES_PER_HOUR*HOURS_PER_DAY))");
+        System.out.println(new Timestamp(timestamp.getTime() - (MILLIS_PER_SECOND*
+                SECONDS_PER_MINUTE*MINUTES_PER_HOUR*HOURS_PER_DAY)));
+        return new Timestamp(timestamp.getTime() - (MILLIS_PER_SECOND*
+                SECONDS_PER_MINUTE*MINUTES_PER_HOUR*HOURS_PER_DAY));
+    }
+
+    public int nullSafeSum(Integer numA, Integer numB) {
+        System.out.println("NUM A");
+        System.out.println(numA);
+        System.out.println("NUM B");
+        System.out.println(numB);
+        return (numA!=null?numA : 0) + (numB!=null?numB : 0);
+
+    }
+    public int messagesLastHour(){
+        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneHourAgo()) , groupMessageRepository.getTotalMessagesFromTime(timeOneHourAgo()));
+    }
+
+    public int messagesLastDay(){
+        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()) , groupMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()));
+    }
+    public int messagesAllTime(){
+        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()) , groupMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()));
+    }
+
+    public int bytesLastHour(){
+        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(timeOneHourAgo()) , groupMessageRepository.getTotalBytesFromTime(timeOneHourAgo()));
+    }
+
+    public Integer bytesLastDay(){
+        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(timeOneDayAgo()) , groupMessageRepository.getTotalBytesFromTime(timeOneDayAgo()));
+    }
+    public Integer bytesAllTime(){
+        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(new Timestamp(0)) , groupMessageRepository.getTotalBytesFromTime(new Timestamp(0)));
     }
 
     public static long differenceInMinutes(Timestamp t1, Timestamp t2) {

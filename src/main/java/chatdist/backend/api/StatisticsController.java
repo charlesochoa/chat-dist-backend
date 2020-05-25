@@ -61,6 +61,12 @@ public class StatisticsController {
             statistics.setActiveChatrooms(statisticsUtils.getActiveChatrooms());
             statistics.setMessagesPerMinute(statisticsUtils.getMessagesPerMinute());
             statistics.setBytesPerMinute(statisticsUtils.getBytesPerMinute());
+            statistics.setBytesLastHour(statisticsUtils.bytesLastHour());
+            statistics.setBytesLastDay(statisticsUtils.bytesLastDay());
+            statistics.setBytesAllTime(statisticsUtils.bytesAllTime());
+            statistics.setMessagesLastHour(statisticsUtils.messagesLastHour());
+            statistics.setMessagesLastDay(statisticsUtils.messagesLastDay());
+            statistics.setMessagesAllTime(statisticsUtils.messagesAllTime());
 
             ObjectMapper mapper = new ObjectMapper();
             try {

@@ -16,7 +16,7 @@ public interface ChatroomRepository extends CrudRepository<Chatroom, Long> {
     @Query("SELECT c FROM Chatroom c WHERE ?1 IN (SELECT u FROM c.users u)")
     List<Chatroom> findByParticipant(User user);
 
-    @Query("SELECT count(c) FROM Chatroom c WHERE ?1 IN (SELECT u FROM c.users u)")
+    @Query("SELECT DISTINCT count(c) FROM Chatroom c WHERE ?1 IN (SELECT u FROM c.users u)")
     int totalChatroomsByParticipant(User user);
 
 }

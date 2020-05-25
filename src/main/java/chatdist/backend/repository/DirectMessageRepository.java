@@ -22,7 +22,13 @@ public interface DirectMessageRepository extends BaseMessageRepository<DirectMes
     Timestamp getMaxTimestamp(Boolean text);
 
     @Query("SELECT count(d) FROM DirectMessage d WHERE d.text = ?1 AND NOT d.sender IS NULL")
-    int getTotalDirectMessages(Boolean text);
+    Integer getTotalDirectMessages(Boolean text);
+
+    @Query("SELECT count(d) FROM DirectMessage d WHERE d.time >= ?1")
+    Integer getTotalMessagesFromTime(Timestamp t);
+
+    @Query("SELECT sum(d.bytes) FROM DirectMessage d WHERE d.time >= ?1")
+    Integer getTotalBytesFromTime(Timestamp t);
 
     @Query("SELECT sum(d.bytes) FROM DirectMessage d WHERE d.text = ?1 AND NOT d.sender IS NULL")
     Long getTotalBytes(Boolean text);

@@ -22,7 +22,13 @@ public interface GroupMessageRepository extends BaseMessageRepository<GroupMessa
     Timestamp getMaxTimestamp(Boolean text);
 
     @Query("SELECT count(g) FROM GroupMessage g WHERE g.text = ?1")
-    int getTotalGroupMessages(Boolean text);
+    Integer getTotalGroupMessages(Boolean text);
+
+    @Query("SELECT count(g) FROM GroupMessage g WHERE g.time >= ?1")
+    Integer getTotalMessagesFromTime(Timestamp t);
+
+    @Query("SELECT sum(g.bytes) FROM GroupMessage g WHERE g.time >= ?1")
+    Integer getTotalBytesFromTime(Timestamp t);
 
     @Query("SELECT sum(g.bytes) FROM GroupMessage g WHERE g.text = ?1")
     Long getTotalBytes(Boolean text);
