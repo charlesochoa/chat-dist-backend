@@ -32,7 +32,11 @@ public class DirectMessageController {
 
     @PostMapping("/send")
     public @ResponseBody DirectMessage sendMessage(@RequestBody DirectMessage message)
-            throws IOException, TimeoutException {
+            throws Exception {
+        if(message.getContent().length()>500){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Message too long");
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String jsonStr = objectMapper.writeValueAsString(message);

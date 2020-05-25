@@ -56,15 +56,4 @@ public class AuthenticationController {
         );
     }
 
-    @PostMapping(path="/sign-in")
-    public @ResponseBody User signIn(@RequestBody User user) {
-        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
-        if (optionalUser.isPresent()) {
-            if (passwordEncoder.matches(user.getPassword(), optionalUser.get().getPassword())) {
-                return optionalUser.get();
-            }
-            return null;
-        }
-        return null;
-    }
 }
