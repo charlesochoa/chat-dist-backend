@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
 
     private UserRepository userRepository;
 

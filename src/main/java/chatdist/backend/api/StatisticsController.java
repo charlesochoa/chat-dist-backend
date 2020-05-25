@@ -24,7 +24,7 @@ import java.util.Set;
 
 @Controller
 public class StatisticsController {
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
 
     @Autowired
     private StatisticsRepository statisticsRepository;
