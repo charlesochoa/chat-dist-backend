@@ -81,4 +81,18 @@ public class Chatroom {
     public Set<User> getUsers() {
         return users;
     }
+
+    public boolean equals(Object obj){
+        if (obj instanceof Chatroom) {
+            Chatroom chat = (Chatroom) obj;
+            return this.bindingName.equals(chat.bindingName);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return bindingName.hashCode();
+    }
 }

@@ -1,5 +1,6 @@
 package chatdist.backend.util;
 
+import chatdist.backend.model.Chatroom;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.ChatroomRepository;
 import chatdist.backend.repository.DirectMessageRepository;
@@ -7,8 +8,7 @@ import chatdist.backend.repository.GroupMessageRepository;
 
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 public class StatisticsUtils {
     private static final long MINUTES_PER_HOUR = 60;
@@ -79,10 +79,12 @@ public class StatisticsUtils {
 
     public int getActiveChatrooms() {
         int activeChatrooms = 0;
+        List<Chatroom> chatList = new ArrayList<Chatroom>();
         for (User loggedIn: queues) {
-            activeChatrooms = activeChatrooms + chatroomRepository.totalChatroomsByParticipant(loggedIn);
+            chatList.addAll(chatroomRepository.findByParticipant(loggedIn));
         }
-        return activeChatrooms;
+        Set<Chatroom> chatSet = new HashSet<Chatroom>(chatList);
+        return chatSet.size();
     }
 
     public float getMessagesPerMinute() {
