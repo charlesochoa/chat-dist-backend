@@ -1,10 +1,13 @@
 package chatdist.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Entity
 public class GroupMessage extends BaseMessage {
     @ManyToOne
+    @JsonProperty("chatroom")
     private Chatroom chatroom;
 
     protected GroupMessage() {

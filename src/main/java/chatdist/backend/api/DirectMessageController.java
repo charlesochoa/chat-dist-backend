@@ -56,10 +56,10 @@ public class DirectMessageController {
             throws IOException, TimeoutException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            DirectMessage newDirectMessage = directMessageRepository.save(message);
             String jsonStr = objectMapper.writeValueAsString(message);
             channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, RabbitMQConstants.ADMIN_ROUTING_KEY,
                     null, jsonStr.getBytes());
-            DirectMessage newDirectMessage = directMessageRepository.save(message);
             return newDirectMessage;
         } catch (IOException e) {
             e.printStackTrace();
