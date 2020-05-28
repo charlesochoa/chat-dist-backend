@@ -34,6 +34,10 @@ public class GroupMessageController {
     public @ResponseBody GroupMessage sendGroupMessage(@RequestBody GroupMessage message,
                                                        @PathVariable Long chatroomId)
             throws IOException, TimeoutException {
+        if (message.getContent().length() > 500){
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "Message too long");
+        }
         Optional<Chatroom> optionalChatroom = chatroomRepository.findById(chatroomId);
         if (optionalChatroom.isPresent()) {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -68,6 +72,17 @@ public class GroupMessageController {
         }
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Chatroom not found"
+        );
+    }
+
+    @GetMapping(path="/{id}")
+    public @ResponseBody GroupMessage getGroupMessage(@PathVariable Long id) {
+        Optional<GroupMessage> optionalGroupMessage = groupMessageRepository.findById(id);
+        if (optionalGroupMessage.isPresent()) {
+            return optionalGroupMessage.get();
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Direct message not found"
         );
     }
 

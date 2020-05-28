@@ -99,6 +99,17 @@ public class ChatroomController {
         );
     }
 
+    @GetMapping(path="/{id}")
+    public @ResponseBody Chatroom getChatroom(@PathVariable Long id) {
+        Optional<Chatroom> optionalChatroom = chatroomRepository.findById(id);
+        if (optionalChatroom.isPresent()) {
+            return optionalChatroom.get();
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Chatroom not found"
+        );
+    }
+
     @PutMapping(path="/{id}")
     public @ResponseBody Chatroom updateChatroom(@PathVariable Long id, @RequestParam String name) {
         Optional<Chatroom> optionalChatroom = chatroomRepository.findById(id);

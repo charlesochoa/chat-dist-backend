@@ -33,9 +33,9 @@ public class DirectMessageController {
     @PostMapping("/send")
     public @ResponseBody DirectMessage sendMessage(@RequestBody DirectMessage message)
             throws Exception {
-        if(message.getContent().length()>500){
+        if (message.getContent().length() > 500){
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Message too long");
+                    HttpStatus.FORBIDDEN, "Message too long");
         }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -54,6 +54,10 @@ public class DirectMessageController {
     @PostMapping("/send-all")
     public @ResponseBody DirectMessage sendMessageToAll(@RequestBody DirectMessage message)
             throws IOException, TimeoutException {
+        if (message.getContent().length() > 500){
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "Message too long");
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             DirectMessage newDirectMessage = directMessageRepository.save(message);
@@ -80,6 +84,17 @@ public class DirectMessageController {
         }
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User not found"
+        );
+    }
+
+    @GetMapping(path="/{id}")
+    public @ResponseBody DirectMessage getDirectMessage(@PathVariable Long id) {
+        Optional<DirectMessage> optionalDirectMessage = directMessageRepository.findById(id);
+        if (optionalDirectMessage.isPresent()) {
+            return optionalDirectMessage.get();
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Direct message not found"
         );
     }
 
