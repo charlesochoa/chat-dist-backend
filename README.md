@@ -347,30 +347,30 @@ This endpoint creates a new chatroom and returns the chatroom that was created.
 * **URL Params:** `None`
 
 * **Body**
-      ```
-        {
-          "users": [
-            {
-              "id": 10,
-              "username": "user10",
-              "email": "user10@gmail.com",
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user10",
-              "roles": []
-            }
-          ],
-          "admin": {
+    ```
+      {
+        "users": [
+          {
             "id": 10,
             "username": "user10",
             "email": "user10@gmail.com",
             "password": "<BCrypt encoded password>",
             "bindingName": "user.user10",
             "roles": []
-          },
-          "bindingName": "chatroom.1.user10",
-          "name": "Chatroom 1"
-        }
-      ```
+          }
+        ],
+        "admin": {
+          "id": 10,
+          "username": "user10",
+          "email": "user10@gmail.com",
+          "password": "<BCrypt encoded password>",
+          "bindingName": "user.user10",
+          "roles": []
+        },
+        "bindingName": "chatroom.1.user10",
+        "name": "Chatroom 1"
+      }
+    ```
 
 * **Success Response:**
 
@@ -866,30 +866,30 @@ This endpoint adds a direct message to the database and sends the message to Rab
 * **URL Params:** `None`
 
 * **Body**
-      ```
-        {
-          "sender": {
-              "id": 1,
-              "username": "user1",
-              "email": "user1@gmail.com",
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user1",
-              "roles": []
-          },
-          "time": "1970-01-01T00:00:00.000+0000",
-          "content": "A new message",
-          "text": true,
-          "bytes": 0,
-          "receiver": {
-              "id": 2,
-              "username": "user2",
-              "email": "user2@gmail.com",
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.user2",
-              "roles": []
-          }
+    ```
+      {
+        "sender": {
+            "id": 1,
+            "username": "user1",
+            "email": "user1@gmail.com",
+            "password": "<BCrypt encoded password>",
+            "bindingName": "user.user1",
+            "roles": []
+        },
+        "time": "1970-01-01T00:00:00.000+0000",
+        "content": "A new message",
+        "text": true,
+        "bytes": 0,
+        "receiver": {
+            "id": 2,
+            "username": "user2",
+            "email": "user2@gmail.com",
+            "password": "<BCrypt encoded password>",
+            "bindingName": "user.user2",
+            "roles": []
         }
-      ```
+      }
+    ```
 
 * **Success Response:**
 
@@ -959,28 +959,28 @@ This endpoint adds a direct message to the database and sends the message to Rab
 * **URL Params:** `None`
 
 * **Body**
-      ```
-        {
-          "sender": {
-              "id": 1,
-              "username": "admin",
-              "email": "admin@gmail.com",
-              "password": "<BCrypt encoded password>",
-              "bindingName": "user.admin",
-              "roles": [
-                {
-                  "id": 1,
-                  "value": "ADMIN"
-                }
-              ]
-          },
-          "time": "1970-01-01T00:00:00.000+0000",
-          "content": "A new message",
-          "text": true,
-          "bytes": 0,
-          "receiver": null
-        }
-      ```
+    ```
+      {
+        "sender": {
+            "id": 1,
+            "username": "admin",
+            "email": "admin@gmail.com",
+            "password": "<BCrypt encoded password>",
+            "bindingName": "user.admin",
+            "roles": [
+              {
+                "id": 1,
+                "value": "ADMIN"
+              }
+            ]
+        },
+        "time": "1970-01-01T00:00:00.000+0000",
+        "content": "A new message",
+        "text": true,
+        "bytes": 0,
+        "receiver": null
+      }
+    ```
 
 * **Success Response:**
 
@@ -1241,27 +1241,27 @@ This endpoint adds a group message to the database and sends the message to Rabb
 * **URL Params:** `None`
 
 * **Body**
-      ```
-        {
-          "sender": {
-            "id": 38,
-            "username": "user3",
-            "email": null,
-            "password": "$2a$10$dNJeCWSb9SABZQqPDQlIjupTqAiLSPy1b3ULILzGSMSCc6kJLJFcu",
-            "bindingName": "user.user3",
-            "roles": [
-              {
-                "id": 2,
-                "value": "NORMAL"
-              }
-            ]
-          },
-          "time": "2020-05-26T08:24:02.802+0000",
-          "content": "Primer mensaje de prueba",
-          "text": true,
-          "bytes": 0
-        }
-      ```
+    ```
+      {
+        "sender": {
+          "id": 38,
+          "username": "user3",
+          "email": null,
+          "password": "$2a$10$dNJeCWSb9SABZQqPDQlIjupTqAiLSPy1b3ULILzGSMSCc6kJLJFcu",
+          "bindingName": "user.user3",
+          "roles": [
+            {
+              "id": 2,
+              "value": "NORMAL"
+            }
+          ]
+        },
+        "time": "2020-05-26T08:24:02.802+0000",
+        "content": "Primer mensaje de prueba",
+        "text": true,
+        "bytes": 0
+      }
+    ```
 
 * **Success Response:**
 
