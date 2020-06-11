@@ -1,12 +1,12 @@
 package chatdist.backend.util;
 
+import chatdist.backend.model.BaseMessage;
 import chatdist.backend.model.Chatroom;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.ChatroomRepository;
 import chatdist.backend.repository.DirectMessageRepository;
 import chatdist.backend.repository.GroupMessageRepository;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -36,9 +36,6 @@ public class StatisticsUtils {
     }
     public static Timestamp timeOneDayAgo(){
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        System.out.println("new Timestamp(timestamp.getTime() - (MILLIS_PER_SECOND*SECONDS_PER_MINUTE*MINUTES_PER_HOUR*HOURS_PER_DAY))");
-        System.out.println(new Timestamp(timestamp.getTime() - (MILLIS_PER_SECOND*
-                SECONDS_PER_MINUTE*MINUTES_PER_HOUR*HOURS_PER_DAY)));
         return new Timestamp(timestamp.getTime() - (MILLIS_PER_SECOND*
                 SECONDS_PER_MINUTE*MINUTES_PER_HOUR*HOURS_PER_DAY));
     }
@@ -52,25 +49,31 @@ public class StatisticsUtils {
 
     }
     public int messagesLastHour(){
-        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneHourAgo()) , groupMessageRepository.getTotalMessagesFromTime(timeOneHourAgo()));
+        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneHourAgo()),
+                groupMessageRepository.getTotalMessagesFromTime(timeOneHourAgo()));
     }
 
     public int messagesLastDay(){
-        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()) , groupMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()));
+        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()),
+                groupMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()));
     }
     public int messagesAllTime(){
-        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()) , groupMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()));
+        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()),
+                groupMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()));
     }
 
     public int bytesLastHour(){
-        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(timeOneHourAgo()) , groupMessageRepository.getTotalBytesFromTime(timeOneHourAgo()));
+        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(timeOneHourAgo()),
+                groupMessageRepository.getTotalBytesFromTime(timeOneHourAgo()));
     }
 
     public Integer bytesLastDay(){
-        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(timeOneDayAgo()) , groupMessageRepository.getTotalBytesFromTime(timeOneDayAgo()));
+        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(timeOneDayAgo()),
+                groupMessageRepository.getTotalBytesFromTime(timeOneDayAgo()));
     }
     public Integer bytesAllTime(){
-        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(new Timestamp(0)) , groupMessageRepository.getTotalBytesFromTime(new Timestamp(0)));
+        return nullSafeSum(directMessageRepository.getTotalBytesFromTime(new Timestamp(0)),
+                groupMessageRepository.getTotalBytesFromTime(new Timestamp(0)));
     }
 
     public static long differenceInMinutes(Timestamp t1, Timestamp t2) {
@@ -88,13 +91,13 @@ public class StatisticsUtils {
     }
 
     public float getMessagesPerMinute() {
-        int totalDirectMessages = directMessageRepository.getTotalDirectMessages(true);
-        Timestamp minTimestampDirectMessages = directMessageRepository.getMinTimestamp(true);
-        Timestamp maxTimestampDirectMessages = directMessageRepository.getMaxTimestamp(true);
+        int totalDirectMessages = directMessageRepository.getTotalDirectMessages(BaseMessage.ContentType.MESSAGE);
+        Timestamp minTimestampDirectMessages = directMessageRepository.getMinTimestamp(BaseMessage.ContentType.MESSAGE);
+        Timestamp maxTimestampDirectMessages = directMessageRepository.getMaxTimestamp(BaseMessage.ContentType.MESSAGE);
 
-        int totalGroupMessages = groupMessageRepository.getTotalGroupMessages(true);
-        Timestamp minTimestampGroupMessages = groupMessageRepository.getMinTimestamp(true);
-        Timestamp maxTimestampGroupMessages = groupMessageRepository.getMaxTimestamp(true);
+        int totalGroupMessages = groupMessageRepository.getTotalGroupMessages(BaseMessage.ContentType.MESSAGE);
+        Timestamp minTimestampGroupMessages = groupMessageRepository.getMinTimestamp(BaseMessage.ContentType.MESSAGE);
+        Timestamp maxTimestampGroupMessages = groupMessageRepository.getMaxTimestamp(BaseMessage.ContentType.MESSAGE);
 
         int totalMessages = totalDirectMessages + totalGroupMessages;
         Timestamp minTimestamp = null;
@@ -129,13 +132,14 @@ public class StatisticsUtils {
     }
 
     public float getBytesPerMinute() {
-        Long totalDirectMessagesBytes = directMessageRepository.getTotalBytes(false);
-        Timestamp minTimestampDirectMessages = directMessageRepository.getMinTimestamp(false);
-        Timestamp maxTimestampDirectMessages = directMessageRepository.getMaxTimestamp(false);
 
-        Long totalGroupMessagesBytes = groupMessageRepository.getTotalBytes(false);
-        Timestamp minTimestampGroupMessages = groupMessageRepository.getMinTimestamp(false);
-        Timestamp maxTimestampGroupMessages = groupMessageRepository.getMaxTimestamp(false);
+        Long totalDirectMessagesBytes = directMessageRepository.getTotalBytes(BaseMessage.ContentType.FILE);
+        Timestamp minTimestampDirectMessages = directMessageRepository.getMinTimestamp(BaseMessage.ContentType.FILE);
+        Timestamp maxTimestampDirectMessages = directMessageRepository.getMaxTimestamp(BaseMessage.ContentType.FILE);
+
+        Long totalGroupMessagesBytes = groupMessageRepository.getTotalBytes(BaseMessage.ContentType.FILE);
+        Timestamp minTimestampGroupMessages = groupMessageRepository.getMinTimestamp(BaseMessage.ContentType.FILE);
+        Timestamp maxTimestampGroupMessages = groupMessageRepository.getMaxTimestamp(BaseMessage.ContentType.FILE);
 
         totalDirectMessagesBytes = totalDirectMessagesBytes == null ? 0 : totalDirectMessagesBytes;
         totalGroupMessagesBytes = totalGroupMessagesBytes == null ? 0 : totalGroupMessagesBytes;

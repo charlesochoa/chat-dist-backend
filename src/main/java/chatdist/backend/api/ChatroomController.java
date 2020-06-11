@@ -99,6 +99,33 @@ public class ChatroomController {
         );
     }
 
+    @PostMapping(path="/{id}/remove-user/{userId}")
+    public @ResponseBody Chatroom removeUserFromChatroom(@PathVariable Long id,
+                                                    @PathVariable Long userId) throws IOException {
+        Optional<Chatroom> optionalChatroom = chatroomRepository.findById(id);
+
+        if (optionalChatroom.isPresent()) {
+            Optional<User> optionalUser = userRepository.findById(userId);
+            if (optionalUser.isPresent()) {
+                if (optionalChatroom.get().removeUser(optionalUser.get())) {
+                    channel.queueUnbind(optionalUser.get().getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
+                            optionalChatroom.get().getBindingName());
+                    chatroomRepository.save(optionalChatroom.get());
+                    return optionalChatroom.get();
+                }
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found in the chatroom"
+                );
+            }
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found"
+            );
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Chatroom not found"
+        );
+    }
+
     @GetMapping(path="/{id}")
     public @ResponseBody Chatroom getChatroom(@PathVariable Long id) {
         Optional<Chatroom> optionalChatroom = chatroomRepository.findById(id);

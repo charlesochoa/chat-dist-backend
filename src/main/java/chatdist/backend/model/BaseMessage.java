@@ -5,6 +5,13 @@ import java.sql.Timestamp;
 
 @MappedSuperclass
 public class BaseMessage {
+    public enum ContentType {
+        REMOVE,
+        ADD,
+        MESSAGE,
+        FILE
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -18,16 +25,17 @@ public class BaseMessage {
     @Column(name = "content", columnDefinition = "varchar(500)")
     private String content;
 
-    private Boolean text;
-
     private long bytes;
+
+    @Enumerated(EnumType.STRING)
+    private ContentType contentType;
 
     protected BaseMessage() {
     }
 
-    public BaseMessage(String content, Boolean text, User sender) {
+    public BaseMessage(String content, ContentType contentType, User sender) {
         this.content = content;
-        this.text = text;
+        this.contentType = contentType;
         this.sender = sender;
         this.time = new Timestamp(System.currentTimeMillis());
         this.bytes = 0;
@@ -49,13 +57,13 @@ public class BaseMessage {
         return content;
     }
 
-    public Boolean getText() {
-        return text;
-    }
-
-    public void setText(Boolean text) {
-        this.text = text;
-    }
+//    public Boolean getText() {
+//        return text;
+//    }
+//
+//    public void setText(Boolean text) {
+//        this.text = text;
+//    }
 
     public long getBytes() {
         return bytes;
@@ -63,6 +71,14 @@ public class BaseMessage {
 
     public void setBytes(long bytes) {
         this.bytes = bytes;
+    }
+
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
     }
 
 }

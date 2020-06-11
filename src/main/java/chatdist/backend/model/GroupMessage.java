@@ -13,8 +13,8 @@ public class GroupMessage extends BaseMessage {
     protected GroupMessage() {
     }
 
-    public GroupMessage(String content, Boolean text, User sender, Chatroom chatroom) {
-        super(content, text, sender);
+    public GroupMessage(String content, ContentType contentType, User sender, Chatroom chatroom) {
+        super(content, contentType, sender);
         chatroom = chatroom;
     }
 

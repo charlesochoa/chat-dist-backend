@@ -78,6 +78,8 @@ public class Chatroom {
         return users.add(user);
     }
 
+    public boolean removeUser(User user) { return users.remove(user); }
+
     public Set<User> getUsers() {
         return users;
     }

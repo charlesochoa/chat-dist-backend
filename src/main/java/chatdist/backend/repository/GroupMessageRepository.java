@@ -1,5 +1,6 @@
 package chatdist.backend.repository;
 
+import chatdist.backend.model.BaseMessage;
 import chatdist.backend.model.Chatroom;
 import chatdist.backend.model.GroupMessage;
 import org.springframework.data.jpa.repository.Query;
@@ -13,16 +14,14 @@ public interface GroupMessageRepository extends BaseMessageRepository<GroupMessa
     @Query("SELECT g FROM GroupMessage g WHERE g.chatroom = ?1")
     List<GroupMessage> getGroupMessagesByChatroom(Chatroom chatroom);
 
-    List<GroupMessage> getGroupMessagesByText(Boolean text);
+    @Query("SELECT min(g.time) FROM GroupMessage g WHERE g.contentType = ?1")
+    Timestamp getMinTimestamp(BaseMessage.ContentType contentType);
 
-    @Query("SELECT min(g.time) FROM GroupMessage g WHERE g.text = ?1")
-    Timestamp getMinTimestamp(Boolean text);
+    @Query("SELECT max(g.time) FROM GroupMessage g WHERE g.contentType = ?1")
+    Timestamp getMaxTimestamp(BaseMessage.ContentType contentType);
 
-    @Query("SELECT max(g.time) FROM GroupMessage g WHERE g.text = ?1")
-    Timestamp getMaxTimestamp(Boolean text);
-
-    @Query("SELECT count(g) FROM GroupMessage g WHERE g.text = ?1")
-    Integer getTotalGroupMessages(Boolean text);
+    @Query("SELECT count(g) FROM GroupMessage g WHERE g.contentType = ?1")
+    Integer getTotalGroupMessages(BaseMessage.ContentType contentType);
 
     @Query("SELECT count(g) FROM GroupMessage g WHERE g.time >= ?1")
     Integer getTotalMessagesFromTime(Timestamp t);
@@ -30,6 +29,6 @@ public interface GroupMessageRepository extends BaseMessageRepository<GroupMessa
     @Query("SELECT sum(g.bytes) FROM GroupMessage g WHERE g.time >= ?1")
     Integer getTotalBytesFromTime(Timestamp t);
 
-    @Query("SELECT sum(g.bytes) FROM GroupMessage g WHERE g.text = ?1")
-    Long getTotalBytes(Boolean text);
+    @Query("SELECT sum(g.bytes) FROM GroupMessage g WHERE g.contentType = ?1")
+    Long getTotalBytes(BaseMessage.ContentType contentType);
 }
