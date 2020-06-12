@@ -34,7 +34,7 @@ public class GroupMessageController {
     public @ResponseBody GroupMessage sendGroupMessage(@RequestBody GroupMessage message,
                                                        @PathVariable Long chatroomId)
             throws IOException, TimeoutException {
-        if (message.getContent().length() > 500){
+        if (message.getContent() != null && message.getContent().length() > 500){
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "Message too long");
         }
