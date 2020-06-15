@@ -41,7 +41,7 @@ public class WebSocketController {
                     for (User loggedIn: queues) {
                         GetResponse response = channel.basicGet(loggedIn.getBindingName(), RabbitMQConstants.AUTO_ACK);
                         if (response == null) {
-                            Thread.sleep(100);
+                            Thread.sleep(50);
                         } else {
                             byte[] body = response.getBody();
                             this.messagingTemplate.convertAndSend("/topic/chat/" + loggedIn.getUsername(),

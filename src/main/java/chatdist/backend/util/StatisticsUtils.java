@@ -58,7 +58,7 @@ public class StatisticsUtils {
                 groupMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()));
     }
     public int messagesAllTime(){
-        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()),
+        return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(new Timestamp(0)),
                 groupMessageRepository.getTotalMessagesFromTime(timeOneDayAgo()));
     }
 

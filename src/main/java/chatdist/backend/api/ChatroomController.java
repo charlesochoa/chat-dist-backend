@@ -84,10 +84,18 @@ public class ChatroomController {
         if (optionalChatroom.isPresent()) {
             Optional<User> optionalUser = userRepository.findById(userId);
             if (optionalUser.isPresent()) {
-                optionalChatroom.get().addUser(optionalUser.get());
-                channel.queueBind(optionalUser.get().getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
-                        optionalChatroom.get().getBindingName());
-                chatroomRepository.save(optionalChatroom.get());
+                try {
+                    optionalChatroom.get().addUser(optionalUser.get());
+                    channel.queueBind(optionalUser.get().getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
+                            optionalChatroom.get().getBindingName());
+                    chatroomRepository.save(optionalChatroom.get());
+
+                } catch (Exception e)
+                {
+                    throw new ResponseStatusException(
+                            HttpStatus.FOUND, "User already added to chatroom"
+                    );
+                }
                 return optionalChatroom.get();
             }
             throw new ResponseStatusException(
@@ -107,6 +115,7 @@ public class ChatroomController {
         if (optionalChatroom.isPresent()) {
             Optional<User> optionalUser = userRepository.findById(userId);
             if (optionalUser.isPresent()) {
+
                 if (optionalChatroom.get().removeUser(optionalUser.get())) {
                     channel.queueUnbind(optionalUser.get().getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
                             optionalChatroom.get().getBindingName());
