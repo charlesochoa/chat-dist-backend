@@ -64,6 +64,7 @@ public class WebSocketController {
             // Admin is not counted
         }
         statistics.setActiveUsers(queues.size()-1);
+        statistics.setActiveChatrooms(statisticsUtils.getActiveChatrooms());
         statisticsRepository.save(statistics);
         queues.add(user);
         logger.info("Elements in queue: {}", queues);

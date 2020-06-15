@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Entity
 public class GroupMessage extends BaseMessage {
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonProperty("chatroom")
     private Chatroom chatroom;
 

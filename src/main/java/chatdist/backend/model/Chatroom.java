@@ -1,5 +1,8 @@
 package chatdist.backend.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,6 +84,12 @@ public class Chatroom {
         return users;
     }
 
+    public void clearUsers() {
+        this.users.clear();
+    }
+
+    public void setUsers(HashSet<User> users) { this.users = users; }
+
     public boolean equals(Object obj){
         if (obj instanceof Chatroom) {
             Chatroom chat = (Chatroom) obj;
@@ -101,5 +110,9 @@ public class Chatroom {
 
     public void setGroupMessages(Set<GroupMessage> groupMessages) {
         this.groupMessages = groupMessages;
+    }
+
+    public void clearGroupMessages() {
+        this.groupMessages.clear();
     }
 }

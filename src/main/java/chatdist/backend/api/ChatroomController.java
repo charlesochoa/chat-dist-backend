@@ -124,7 +124,6 @@ public class ChatroomController {
         if (optionalChatroom.isPresent()) {
             Optional<User> optionalUser = userRepository.findById(userId);
             if (optionalUser.isPresent()) {
-
                 if (optionalChatroom.get().removeUser(optionalUser.get())) {
                     channel.queueUnbind(optionalUser.get().getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
                             optionalChatroom.get().getBindingName());
@@ -177,13 +176,17 @@ public class ChatroomController {
             Optional<User> optionalUser = userRepository.findByUsername(username);
             if (optionalUser.isPresent()) {
                 if (optionalUser.get() == optionalChatroom.get().getAdmin()) {
-                    for (User u : optionalChatroom.get().getUsers()) {
+                    Set<User> userSet = optionalChatroom.get().getUsers();
+                    for (User u: userSet) {
                         channel.queueUnbind(u.getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
                                 optionalChatroom.get().getBindingName());
                     }
+                    optionalChatroom.get().clearUsers();
                     for (GroupMessage g : optionalChatroom.get().getGroupMessages()) {
                         groupMessageRepository.deleteById(g.getId());
                     }
+                    optionalChatroom.get().clearGroupMessages();
+                    chatroomRepository.save(optionalChatroom.get());
                     chatroomRepository.deleteById(id);
                     return ResponseEntity.noContent().header("Content-Length", "0").build();
                 }
