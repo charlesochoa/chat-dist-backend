@@ -1,6 +1,8 @@
 package chatdist.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -20,10 +22,6 @@ public class GroupMessage extends BaseMessage {
 
     @Override
     public String toString() {
-        System.out.println(getId());
-        System.out.println(getSender());
-        System.out.println(getContent());
-        System.out.println(getChatRoom());
         return String.format(
                 "GroupMessage[id=%d, sender='%s', chatroom='%s', content='%s']",
                 getId(), getSender().getUsername(), chatroom.getName(), getContent());

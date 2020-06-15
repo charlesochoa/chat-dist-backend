@@ -41,13 +41,9 @@ public class StatisticsUtils {
     }
 
     public int nullSafeSum(Integer numA, Integer numB) {
-        System.out.println("NUM A");
-        System.out.println(numA);
-        System.out.println("NUM B");
-        System.out.println(numB);
         return (numA!=null?numA : 0) + (numB!=null?numB : 0);
-
     }
+
     public int messagesLastHour(){
         return nullSafeSum(directMessageRepository.getTotalMessagesFromTime(timeOneHourAgo()),
                 groupMessageRepository.getTotalMessagesFromTime(timeOneHourAgo()));
@@ -120,11 +116,10 @@ public class StatisticsUtils {
         }
 
         if (minTimestamp == null || maxTimestamp == null) {
-            System.out.println("Some of the timestamps are null");
             return (float) 0.0;
         }
-        long minutes = differenceInMinutes(minTimestamp, maxTimestamp);
 
+        long minutes = differenceInMinutes(minTimestamp, maxTimestamp);
         if (minutes > 0.0) {
             return ((float) totalMessages) / minutes;
         }

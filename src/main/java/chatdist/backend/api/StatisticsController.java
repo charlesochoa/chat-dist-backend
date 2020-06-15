@@ -1,6 +1,7 @@
 package chatdist.backend.api;
 
 import chatdist.backend.config.WebSocketEventListener;
+import chatdist.backend.model.Chatroom;
 import chatdist.backend.model.Statistics;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.ChatroomRepository;
@@ -20,6 +21,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
+import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -55,8 +57,15 @@ public class StatisticsController {
             StatisticsUtils statisticsUtils = new StatisticsUtils(chatroomRepository, directMessageRepository,
                     groupMessageRepository, queues);
 
-            Statistics statistics = new Statistics();
-            // Admin is not counted
+            Optional<Statistics> optionalStatistics = statisticsRepository.findById(1L);
+            Statistics statistics = null;
+            if (optionalStatistics.isPresent()) {
+                statistics = optionalStatistics.get();
+            } else {
+                statistics = new Statistics();
+                // Admin is not counted
+                statistics.setId(1L);
+            }
             statistics.setActiveUsers(queues.size()-1);
             statistics.setActiveChatrooms(statisticsUtils.getActiveChatrooms());
             statistics.setMessagesPerMinute(statisticsUtils.getMessagesPerMinute());
@@ -67,7 +76,7 @@ public class StatisticsController {
             statistics.setMessagesLastHour(statisticsUtils.messagesLastHour());
             statistics.setMessagesLastDay(statisticsUtils.messagesLastDay());
             statistics.setMessagesAllTime(statisticsUtils.messagesAllTime());
-
+            statisticsRepository.save(statistics);
             ObjectMapper mapper = new ObjectMapper();
             try {
                 String json = mapper.writeValueAsString(statistics);

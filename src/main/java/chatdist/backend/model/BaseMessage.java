@@ -57,14 +57,6 @@ public class BaseMessage {
         return content;
     }
 
-//    public Boolean getText() {
-//        return text;
-//    }
-//
-//    public void setText(Boolean text) {
-//        this.text = text;
-//    }
-
     public long getBytes() {
         return bytes;
     }

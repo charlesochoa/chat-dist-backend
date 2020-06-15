@@ -20,7 +20,7 @@ public class Chatroom {
     @JoinColumn(name = "admin_id")
     private User admin;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     private Set<GroupMessage> groupMessages;
 
     private String bindingName;
@@ -38,9 +38,6 @@ public class Chatroom {
 
     @Override
     public String toString() {
-        System.out.println("Chatroom String");
-        System.out.println(getId());
-        System.out.println(getName());
         return String.format(
                 "Chatroom[id=%d, name='%s']",
                 id, name);
@@ -96,5 +93,13 @@ public class Chatroom {
     @Override
     public int hashCode() {
         return bindingName.hashCode();
+    }
+
+    public Set<GroupMessage> getGroupMessages() {
+        return groupMessages;
+    }
+
+    public void setGroupMessages(Set<GroupMessage> groupMessages) {
+        this.groupMessages = groupMessages;
     }
 }

@@ -44,7 +44,6 @@ public class GroupMessageController {
             try {
                 GroupMessage newMessage = groupMessageRepository.save(message);
                 String jsonStr = objectMapper.writeValueAsString(message);
-                System.out.println(jsonStr);
                 message.setChatroom(optionalChatroom.get());
                 channel.basicPublish(RabbitMQConstants.EXCHANGE_NAME, message.getChatRoom().getBindingName(),
                         null, jsonStr.getBytes());

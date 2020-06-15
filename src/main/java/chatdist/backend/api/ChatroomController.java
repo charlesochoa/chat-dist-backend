@@ -1,8 +1,11 @@
 package chatdist.backend.api;
 
 import chatdist.backend.model.Chatroom;
+import chatdist.backend.model.CustomUserDetails;
+import chatdist.backend.model.GroupMessage;
 import chatdist.backend.model.User;
 import chatdist.backend.repository.ChatroomRepository;
+import chatdist.backend.repository.GroupMessageRepository;
 import chatdist.backend.repository.UserRepository;
 import chatdist.backend.util.RabbitMQConstants;
 import com.rabbitmq.client.Channel;
@@ -10,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,6 +28,9 @@ import java.util.Set;
 public class ChatroomController {
     @Autowired
     private ChatroomRepository chatroomRepository;
+
+    @Autowired
+    private GroupMessageRepository groupMessageRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -159,12 +168,32 @@ public class ChatroomController {
         );
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(path="/{id}")
-    public ResponseEntity<Void> deleteChatroom(@PathVariable Long id) {
-        if (chatroomRepository.existsById(id)) {
-            chatroomRepository.deleteById(id);
-            return ResponseEntity.noContent().header("Content-Length", "0").build();
+    public ResponseEntity<Void> deleteChatroom(@PathVariable Long id) throws IOException {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = principal.toString();
+        Optional<Chatroom> optionalChatroom = chatroomRepository.findById(id);
+        if (optionalChatroom.isPresent()) {
+            Optional<User> optionalUser = userRepository.findByUsername(username);
+            if (optionalUser.isPresent()) {
+                if (optionalUser.get() == optionalChatroom.get().getAdmin()) {
+                    for (User u : optionalChatroom.get().getUsers()) {
+                        channel.queueUnbind(u.getBindingName(), RabbitMQConstants.EXCHANGE_NAME,
+                                optionalChatroom.get().getBindingName());
+                    }
+                    for (GroupMessage g : optionalChatroom.get().getGroupMessages()) {
+                        groupMessageRepository.deleteById(g.getId());
+                    }
+                    chatroomRepository.deleteById(id);
+                    return ResponseEntity.noContent().header("Content-Length", "0").build();
+                }
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User is not the admin"
+                );
+            }
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Admin not found"
+            );
         }
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Chatroom not found"
